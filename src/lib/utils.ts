@@ -1,5 +1,7 @@
 import { Queue } from './Queue';
-import { WorkerScript } from './ditherImageWorker';
+import workerTemplate from '../worker/entry.html';
+console.log(workerTemplate);
+
 import ImageFillData from './IImageFillData';
 import JobResult from './IJobsResult';
 
@@ -89,7 +91,7 @@ export function processJobs(queue: Queue<any>): Promise<JobResult[]> {
   // Create an invisible iframe to act as a "worker" which
   // will do the task of decoding and send us a message
   // when it's done.
-  figma.showUI(WorkerScript, { visible: true,  width: 200, height: 100});
+  figma.showUI(workerTemplate, { visible: true,  width: 200, height: 125});
   // Send the raw bytes of the file to the worker.
   figma.ui.postMessage(jobs);
   // Wait for the worker's response.
