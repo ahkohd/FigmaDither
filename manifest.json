@@ -1,0 +1,7 @@
+{
+  "name": "Dither",
+  "id": "752462766270432644",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
