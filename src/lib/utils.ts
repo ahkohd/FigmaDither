@@ -1,7 +1,5 @@
 import { Queue } from './Queue';
 import workerTemplate from '../worker/entry.html';
-console.log(workerTemplate);
-
 import ImageFillData from './IImageFillData';
 import JobResult from './IJobsResult';
 
@@ -86,7 +84,7 @@ export function addTaskToPool(task: any, queue: Queue<any>) {
 
 export function processJobs(queue: Queue<any>): Promise<JobResult[]> {
   const jobs = queue.toArray();
-  console.log("All jobs", jobs);
+  // console.log("All jobs", jobs);
 
   // Create an invisible iframe to act as a "worker" which
   // will do the task of decoding and send us a message
@@ -151,7 +149,7 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  * @param  {any} resolve
  */
 function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], resolve: any) {
-  console.log(nodeFills);
+  // console.log(nodeFills);
   results.forEach((result, index) => {
     let processDitherEffect = BytesToImagePaintHashImage(result.imageBytes, result.fillData.imageFill);
     // clone the node fills
