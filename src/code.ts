@@ -19,6 +19,7 @@ figma.showUI(__html__, {height: 500, width: 270});
 // posted message.
 figma.ui.onmessage = msg => {
   if (msg.type === "dither-image") {
+    console.log(msg);
     const currentSelections = filterNodesWithFills(getCurrentSelections());
     DoImageDither(currentSelections)
     .then(function () {
