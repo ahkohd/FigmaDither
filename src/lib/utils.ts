@@ -19,7 +19,20 @@ export function getCurrentSelections(): readonly SceneNode[] {
  * @returns SceneNode
  */
 export function filterNodesWithFills(nodes: readonly SceneNode[]): SceneNode[] {
-  const nodeWithFills = nodes.filter(node => "fills" in node);
+  console.log(nodes);
+  const nodeWithFills = nodes.filter(node => {
+    if("fills" in node)
+    {
+      for(const fill of (node.fills as Array<any>))
+      {
+        if(fill.type == "IMAGE")  return true;
+      }
+      return false;
+    } else {
+      return false
+    }
+  });
+
   return nodeWithFills.length == 0 ? [] : nodeWithFills;
 }
 
