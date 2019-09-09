@@ -14,6 +14,17 @@ body {
   margin: 10px 0 0 7px;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.input
+{
+  width: 60px !important;
+}
+
 .slidecontainer {
   width: 100%; /* Width of the outside container */
   display: flex;
@@ -21,47 +32,6 @@ body {
 
 .slidecontainer div {
   flex: 1;
-}
-.slidecontainer .slider {
-  width: 50%;
-}
-
-/* The slider itself */
-.slider {
-  -webkit-appearance: none; /* Override default CSS styles */
-  appearance: none;
-  width: 100%; /* Full-width */
-  height: 1px; /* Specified height */
-  background: #555; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
-  transition: opacity 0.2s;
-  margin-top: 16px;
-}
-
-/* Mouse-over effects */
-.slider:hover {
-  opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 10px; /* Set a specific slider handle width */
-  height: 10px; /* Slider handle height */
-  background: #999; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-  border-radius: 50%;
-}
-
-.slider::-moz-range-thumb {
-  width: 10px; /* Set a specific slider handle width */
-  height: 10px; /* Slider handle height */
-  background: #999; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-  border-radius: 50%;
 }
 
 /* width */

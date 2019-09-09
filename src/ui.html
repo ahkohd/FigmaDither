@@ -15,52 +15,52 @@
 
     <div class="slidecontainer">
         <div class="label">Threshold Value</div>
-        <input id="threshold" class="slider" type="range" min="0" max="255" value="127" step="1"
+        <input id="threshold" class="input" type="number" min="0" max="255" value="127"
             title="Brightness threshold" />
     </div>
     <div class="checkbox">
         <input class="checkbox__box" type="checkbox" name="replace_colours" id="chk_replace_colours">
         <label class="checkbox__label" for="chk_replace_colours">Replace Colours</label>
     </div>
-   
+
     <div class="section-title">Replace black with RGBA</div>
     <div class="slidecontainer">
         <div class="label">Red</div>
-        <input id="rep_black_r" class="slider" type="range" min="0" max="255" value="0" step="1" />
+        <input id="rep_black_r" class="input" type="number" min="0" max="255" value="0"/>
     </div>
     <div class="slidecontainer">
         <div class="label">Blue</div>
-        <input id="rep_black_g" class="slider" type="range" min="0" max="255" value="0" step="1" />
+        <input id="rep_black_g" class="input" type="number" min="0" max="255" value="0" />
     </div>
     <div class="slidecontainer">
         <div class="label">Green</div>
-        <input id="rep_black_b" class="slider" type="range" min="0" max="255" value="0" step="1" />
+        <input id="rep_black_b" class="input" type="number" min="0" max="255" value="0" />
     </div>
     <div class="slidecontainer">
         <div class="label">Alpha</div>
-        <input id="rep_black_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
+        <input id="rep_black_a" class="input" type="number" min="0" max="255" value="255" />
     </div>
     <div class="section-title">Replace white with RGBA</div>
     <div class="slidecontainer">
         <div class="label">Red</div>
-        <input id="rep_white_r" class="slider" type="range" min="0" max="255" value="255" step="1" />
+        <input id="rep_white_r" class="input" type="number" min="0" max="255" value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Blue</div>
-        <input id="rep_white_g" class="slider" type="range" min="0" max="255" value="255" step="1" />
+        <input id="rep_white_g" class="input" type="number" min="0" max="255" value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Green</div>
-        <input id="rep_white_b" class="slider" type="range" min="0" max="255" value="255" step="1" />
+        <input id="rep_white_b" class="input" type="number" min="0" max="255" value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Alpha</div>
-        <input id="rep_white_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
+        <input id="rep_white_a" class="input" type="number" min="0" max="255" value="255" />
     </div>
     <div class="checkbox">
-            <input class="checkbox__box" type="checkbox" name="keep_image" id="keep_image">
-            <label class="checkbox__label" for="keep_image">Keep Image Fill</label>
-        </div>
+        <input class="checkbox__box" type="checkbox" name="keep_image" id="keep_image">
+        <label class="checkbox__label" for="keep_image">Keep Image Fill</label>
+    </div>
     <div class="space">
         <button id="dither" class='button button--primary'>Dither</button>
         <button id="cancel" class='button button--secondary'>Cancel</button>
