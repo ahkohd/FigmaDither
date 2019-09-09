@@ -90,10 +90,10 @@ export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<
   // Create an invisible iframe to act as a "worker" which
   // will do the task of decoding and send us a message
   // when it's done.
-  figma.showUI(workerTemplate, { visible: true,  width: 200, height: 125});
+  figma.showUI(workerTemplate, { visible: true, width: 200, height: 125 });
   // Send the raw bytes of the file to the worker.
   // console.log('sent!', options);
-  figma.ui.postMessage({jobs: jobs, options: options});
+  figma.ui.postMessage({ jobs: jobs, options: options });
   // Wait for the worker's response.
   const jobsResult = new Promise<JobResult[]>((resolve, reject) => {
     figma.ui.onmessage = value => resolve(value)
@@ -121,11 +121,11 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  * @param  {readonlySceneNode[]} currentSelectionsWithImageFills
  */
 
- export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[], options: DitherOptions) {
+export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[], options: DitherOptions) {
   return new Promise((resolve, reject) => {
     let TASKS = new Queue();
     let nodeFills: ImageFillData[] = [];
-  
+
     currentSelectionsWithImageFills.forEach(async function (node, index) {
       const nodesWithImageFills = getImageFillsFromNode(node);
       nodesWithImageFills.forEach(async function (fillData) {
@@ -134,11 +134,11 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
         nodeFills.push(fillData);
         addTaskToPool({ imageBytes: imageBytes, fillData: fillData }, TASKS);
       });
-  
+
       // wait till all jobs are added..
       if (index == currentSelectionsWithImageFills.length - 1) {
         // start processing jobs..
-        applyProcessResults(await processJobs(TASKS, options), nodeFills, resolve);
+        applyProcessResults(await processJobs(TASKS, options), nodeFills, options.keep_image, resolve);
       }
     });
   });
@@ -148,16 +148,24 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  * Applies the processed dither effect to appropriate nodes
  * @param  {JobResult[]} results
  * @param  {ImageFillData[]} nodeFills
+ * @param  {keep} keepImageFills Keeps the original image fill instead of replacing it..
  * @param  {any} resolve
  */
-function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], resolve: any) {
+function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], keepImageFills: boolean = false, resolve: any) {
   // console.log(nodeFills);
   results.forEach((result, index) => {
     let processDitherEffect = BytesToImagePaintHashImage(result.imageBytes, result.fillData.imageFill);
     // clone the node fills
     const copyNodeFills = [...((nodeFills[index].node as GeometryMixin).fills as Array<ImagePaint>)];
-    // replace the image filter
-    copyNodeFills.splice(result.fillData.index, 1, processDitherEffect);
+
+    if (!keepImageFills) {
+      // replace the image filter
+      copyNodeFills.splice(result.fillData.index, 1, processDitherEffect);
+    } else {
+      // the new imag filter to the top..
+      copyNodeFills.push(processDitherEffect);
+    }
+
     (nodeFills[index].node as GeometryMixin).fills = copyNodeFills;
   });
 

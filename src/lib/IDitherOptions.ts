@@ -6,5 +6,6 @@ export default interface DitherOptions
     threshold: number,
     chk_replace_colours: boolean,
     rep_black: number[],
-    rep_white: number[]
+    rep_white: number[],
+    keep_image: boolean
   }
