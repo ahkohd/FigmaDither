@@ -20,10 +20,14 @@ figma.showUI(__html__, {height: 500, width: 270});
 figma.ui.onmessage = msg => {
   if (msg.type === "dither-image") {
     const currentSelections = filterNodesWithFills(getCurrentSelections());
-    DoImageDither(currentSelections, msg.options)
-    .then(function () {
-      figma.closePlugin();
-    });
+    if(currentSelections.length == 0) {
+      figma.notify('😅 Please select item(s) with image fill');
+    } else {
+      DoImageDither(currentSelections, msg.options)
+      .then(function () {
+        figma.closePlugin();
+      });
+    }
   }
 
   if(msg.type === "cancel")

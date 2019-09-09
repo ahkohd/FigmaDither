@@ -122,7 +122,6 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  */
 
 export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[], options: DitherOptions) {
-
   return new Promise((resolve, reject) => {
     let TASKS = new Queue();
     let nodeFills: ImageFillData[] = [];
