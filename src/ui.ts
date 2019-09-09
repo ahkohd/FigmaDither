@@ -25,7 +25,6 @@ document.getElementById('cancel').onclick = () => {
 
  //initialize javascript
  (window as any).selectMenu.init();
- console.log((window as any).selectMenu);
 
  //settings
  (window as any).selectMenu.init({

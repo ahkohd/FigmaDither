@@ -92,7 +92,7 @@ export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<
   // when it's done.
   figma.showUI(workerTemplate, { visible: true,  width: 200, height: 125});
   // Send the raw bytes of the file to the worker.
-  console.log('sent!', options);
+  // console.log('sent!', options);
   figma.ui.postMessage({jobs: jobs, options: options});
   // Wait for the worker's response.
   const jobsResult = new Promise<JobResult[]>((resolve, reject) => {

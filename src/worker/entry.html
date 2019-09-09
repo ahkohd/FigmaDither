@@ -84,6 +84,148 @@
   </div>
 </div>
 <script>
+////////////////////////////////////////////////////////////
+///
+///   
+///
+///
+///
+///////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////// WEB WORKER script in string...
+
+// The code contained in this string is the actual logics to manipulate  canvas image
+// and carry out the dithering effect..
+
+const workerScript = `
+  // Convert image data to greyscale based on luminance.
+function greyscale_luminance(image) {
+    for (var i = 0; i <= image.data.length; i += 4) {
+        image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt(
+            image.data[i] * 0.21 +
+            image.data[i + 1] * 0.71 +
+            image.data[i + 2] * 0.07,
+            10
+        );
+    }
+    return image;
+}
+
+// Convert image data to greyscale based on average of R, G and B values.
+function greyscale_average(image) {
+    for (var i = 0; i <= image.data.length; i += 4) {
+        image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt(
+            (image.data[i] + image.data[i + 1] + image.data[i + 2]) / 3,
+            10
+        );
+    }
+    return image;
+}
+
+// Apply Atkinson Dither to Image Data
+function dither_atkinson(image, imageWidth, drawColour) {
+    skipPixels = 4;
+
+    if (!drawColour) drawColour = false;
+
+    if (drawColour == true) skipPixels = 1;
+
+    imageLength = image.data.length;
+
+    for (
+        currentPixel = 0;
+        currentPixel <= imageLength;
+        currentPixel += skipPixels
+    ) {
+        if (image.data[currentPixel] <= 128) {
+            newPixelColour = 0;
+        } else {
+            newPixelColour = 255;
+        }
+
+        err = parseInt((image.data[currentPixel] - newPixelColour) / 8, 10);
+        image.data[currentPixel] = newPixelColour;
+
+        image.data[currentPixel + 4] += err;
+        image.data[currentPixel + 8] += err;
+        image.data[currentPixel + 4 * imageWidth - 4] += err;
+        image.data[currentPixel + 4 * imageWidth] += err;
+        image.data[currentPixel + 4 * imageWidth + 4] += err;
+        image.data[currentPixel + 8 * imageWidth] += err;
+
+        if (drawColour == false)
+            image.data[currentPixel + 1] = image.data[currentPixel + 2] =
+                image.data[currentPixel];
+    }
+
+    return image.data;
+}
+
+function dither_threshold(image, threshold_value) {
+    for (var i = 0; i <= image.data.length; i += 4) {
+        image.data[i] = image.data[i] > threshold_value ? 255 : 0;
+        image.data[i + 1] = image.data[i + 1] > threshold_value ? 255 : 0;
+        image.data[i + 2] = image.data[i + 2] > threshold_value ? 255 : 0;
+    }
+}
+
+function replace_colours(image, black, white) {
+    for (var i = 0; i <= image.data.length; i += 4) {
+        image.data[i] = image.data[i] < 127 ? black.r : white.r;
+        image.data[i + 1] = image.data[i + 1] < 127 ? black.g : white.g;
+        image.data[i + 2] = image.data[i + 2] < 127 ? black.b : white.b;
+        image.data[i + 3] =
+            (image.data[i] + image.data[i + 1] + image.data[i + 2]) / 3 < 127
+                ? black.a
+                : white.a;
+    }
+}
+
+function dither(data) {
+    if (data.processing.greyscaleMethod == "Luminance") {
+        greyscale_luminance(data.image.data);
+    } else if (data.processing.greyscaleMethod == "RGB Average") {
+        greyscale_average(data.image.data);
+    }
+
+    if (data.processing.ditherMethod == "Atkinson Dithering") {
+        dither_atkinson(
+            data.image.data,
+            data.image.width,
+            data.processing.greyscaleMethod == "Disabled"
+        );
+    } else if (data.processing.ditherMethod == "Threshold") {
+        dither_threshold(data.image.data, data.processing.ditherThreshold);
+    }
+
+    if (data.processing.replaceColours == true) {
+        replace_colours(
+            data.image.data,
+            data.processing.replaceColourMap.black,
+            data.processing.replaceColourMap.white
+        );
+    }
+    return data;
+}
+
+self.addEventListener("message", function (e) { self.postMessage(dither(e.data)); }, false);
+  `;
+
+  // Since we cannot load external script but webworker needs a URL
+  // convert the code than is meant to run in the webworker to
+  // URL BLOB and pass it into the webworker.
+  // Neat trick:
+
+  function loadWebWorker(script) {
+    return new Worker(URL.createObjectURL(new Blob([script])));
+  }
+
+
+
+  ///////////////////////////////////////////////////// LOGICS for job processing
+  ///// Entry point to dithering of the provided image jobs ...
+
+
   // Encoding an image is also done by sticking pixels in an
   // HTML canvas and by asking the canvas to serialize it into
   // an actual PNG file via canvas.toBlob().
@@ -120,6 +262,12 @@
     }
   }
 
+
+  /////////////////////// 1. Spin on our maginficient webworker ...
+  window.DITHER_WORKER = loadWebWorker(workerScript);
+
+
+  /////// 2. Chill, till the user sends a job....
   // Create an event handler to receive messages from the main
   // thread.
   window.onmessage = async event => {
@@ -127,19 +275,37 @@
     // that's the only type of message we'll receive in this
     // plugin. In more complex plugins, you'll want to check the
     // type of the message.
+
+    // contain the processed (dithered) imagebytes...
     const results = [];
+    
+    //  => Take a look at the sent data.
     const recvedData = event.data.pluginMessage;
+
+    // Extract the jobs..
     const jobs = recvedData.jobs;
+
+    // We process the job one after the other...
     for (const job of jobs) {
+
+      // yeah we need to reslove two promises before we proceed to the next job
       results.push({
-        imageBytes: await processDither(job, recvedData.options),
+        imageBytes: await (await processDither(job, recvedData.options)),
         fillData: job.fillData
       });
     }
+
+    // Since we are completely done with our jobs, kill the Webworker...
+    window.DITHER_WORKER.terminate();
+
+    // Send the result back to the User..
     window.parent.postMessage({
       pluginMessage: results
     }, "*");
   };
+
+
+  //////////// 3. This method sends a job request to the web worker and wait till something happens..
 
   async function processDither(job, options) {
     const bytes = job.imageBytes;
@@ -148,7 +314,7 @@
     const ctx = canvas.getContext("2d");
 
     const imageDetails = await decode(canvas, ctx, bytes);
-    console.log(imageDetails);
+    // console.log(imageDetails);
     const preset = {
       image: {
         data: imageDetails.imageData,
@@ -177,152 +343,39 @@
       }
     };
 
-    // Do the actual dither...
-    const result = dither(preset);
-
-    const newBytes = await encode(canvas, ctx, result.image.data);
-    return newBytes;
-  }
-
-
-  // async function processDither(job) {
-  //   const bytes = job.imageBytes;
-
-  //   const canvas = document.createElement("canvas");
-  //   const ctx = canvas.getContext("2d");
-
-  //   const imageData = await decode(canvas, ctx, bytes);
-  //   const pixels = imageData.data;
-
-  //   // Do the actual work of inverting the colors.
-  //   for (let i = 0; i < pixels.length; i += 4) {
-  //     pixels[i + 0] = 255 - pixels[i + 0];
-  //     pixels[i + 1] = 255 - pixels[i + 1];
-  //     pixels[i + 2] = 255 - pixels[i + 2];
-  //     // Don't invert the alpha channel.
-  //   }
-
-  //   const newBytes = await encode(canvas, ctx, imageData);
-  //   return newBytes;
-  // }
-
-
-
-
-
-
-  //////////////////////////////////////////////// Dither methods 
-
-  // Convert image data to greyscale based on luminance.
-  function greyscale_luminance(image) {
-    for (var i = 0; i <= image.data.length; i += 4) {
-
-      image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt(image.data[i] * 0.21 + image.data[i + 1] *
-        0.71 +
-        image.data[i + 2] * 0.07, 10);
-
-    }
-    return image;
-  }
-
-  // Convert image data to greyscale based on average of R, G and B values.
-  function greyscale_average(image) {
-
-    for (var i = 0; i <= image.data.length; i += 4) {
-
-      image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt((image.data[i] + image.data[i + 1] + image
-        .data[
-          i + 2]) / 3, 10);
-
-    }
-    return image;
-  }
-
-  // Apply Atkinson Dither to Image Data
-  function dither_atkinson(image, imageWidth, drawColour) {
-    skipPixels = 4;
-
-    if (!drawColour)
-      drawColour = false;
-
-    if (drawColour == true)
-      skipPixels = 1;
-
-    imageLength = image.data.length;
-
-    for (currentPixel = 0; currentPixel <= imageLength; currentPixel += skipPixels) {
-
-      if (image.data[currentPixel] <= 128) {
-
-        newPixelColour = 0;
-
-      } else {
-
-        newPixelColour = 255;
-
-      }
-
-      err = parseInt((image.data[currentPixel] - newPixelColour) / 8, 10);
-      image.data[currentPixel] = newPixelColour;
-
-      image.data[currentPixel + 4] += err;
-      image.data[currentPixel + 8] += err;
-      image.data[currentPixel + (4 * imageWidth) - 4] += err;
-      image.data[currentPixel + (4 * imageWidth)] += err;
-      image.data[currentPixel + (4 * imageWidth) + 4] += err;
-      image.data[currentPixel + (8 * imageWidth)] += err;
-
-      if (drawColour == false)
-        image.data[currentPixel + 1] = image.data[currentPixel + 2] = image.data[currentPixel];
-
+    // Start timer to track the time that is spent on this current job ...
+    if (window.console && window.console.time) {
+      console.log("Starting Web Worker for image (" + imageDetails.width + "x" + imageDetails.height +
+        ", Greyscale Method: " + options.greyscale_method + ", Dither Method: " + options.dither_method + ")");
+      console.time("Web worker took");
     }
 
-    return image.data;
-  }
+    // Send job to webworker
+    window.DITHER_WORKER.postMessage(preset);
 
+    // NOTICE: Here to avoid memory leaks, we are using a one time event listner..
+    // therefore each job applies an event listner to the worker and once the workers=
+    // sends the result back, we dispose/unregister the event listner...
 
-  function dither_threshold(image, threshold_value) {
+    const workerResult = new Promise(function (resolve, reject) {
+      // Get reply from webworker
+      const oneTimeListen = function (e) {
+        // console.log('result', e);
+        if (window.console && window.console.time) {
+          console.timeEnd("Web worker took");
+        }
+        const result = e.data;
+        encode(canvas, ctx, result.image.data).then(newBytes => {
 
-    for (var i = 0; i <= image.data.length; i += 4) {
+          // make it a one time event listner...
+          window.DITHER_WORKER.removeEventListener('message', oneTimeListen);
+          resolve(newBytes);
+        });
+      };
 
-      image.data[i] = (image.data[i] > threshold_value) ? 255 : 0;
-      image.data[i + 1] = (image.data[i + 1] > threshold_value) ? 255 : 0;
-      image.data[i + 2] = (image.data[i + 2] > threshold_value) ? 255 : 0;
+      window.DITHER_WORKER.addEventListener('message', oneTimeListen, false);
+    });
 
-    }
-  }
-
-  function replace_colours(image, black, white) {
-
-    for (var i = 0; i <= image.data.length; i += 4) {
-
-      image.data[i] = (image.data[i] < 127) ? black.r : white.r;
-      image.data[i + 1] = (image.data[i + 1] < 127) ? black.g : white.g;
-      image.data[i + 2] = (image.data[i + 2] < 127) ? black.b : white.b;
-      image.data[i + 3] = (((image.data[i] + image.data[i + 1] + image.data[i + 2]) / 3) < 127) ? black.a : white.a;
-
-    }
-
-  }
-
-  function dither(data) {
-    if (data.processing.greyscaleMethod == "Luminance") {
-      greyscale_luminance(data.image.data);
-    } else if (data.processing.greyscaleMethod == "RGB Average") {
-      greyscale_average(data.image.data);
-    }
-
-    if (data.processing.ditherMethod == "Atkinson Dithering") {
-      dither_atkinson(data.image.data, data.image.width, (data.processing.greyscaleMethod == "Disabled"));
-
-    } else if (data.processing.ditherMethod == "Threshold") {
-      dither_threshold(data.image.data, data.processing.ditherThreshold);
-    }
-
-    if (data.processing.replaceColours == true) {
-      replace_colours(data.image.data, data.processing.replaceColourMap.black, data.processing.replaceColourMap
-        .white);
-    }
-    return data;
+    return workerResult;
   }
 </script>
