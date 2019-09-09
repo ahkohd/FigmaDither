@@ -6,12 +6,11 @@ document.getElementById('dither').onclick = () => {
   const options = {
     greyscale_method: getValue('greyscale_method'),
     dither_method: getValue('dither_method'),
-    threshold: getValue('threshold'),
-    chk_replace_colours: getValue('chk_replace_colours'),
-    rep_black: [getValue('rep_black_r'), getValue('rep_black_b'), getValue('rep_black_g'), getValue('rep_black_a')],
-    rep_white: [getValue('rep_white_r'), getValue('rep_white_b'), getValue('rep_white_g'), getValue('rep_white_a')]
+    threshold: parseInt(getValue('threshold')),
+    chk_replace_colours: (document.getElementById('chk_replace_colours') as HTMLInputElement).checked,
+    rep_black: [parseInt(getValue('rep_black_r')), parseInt(getValue('rep_black_b')), parseInt(getValue('rep_black_g')), parseInt(getValue('rep_black_a'))],
+    rep_white: [parseInt(getValue('rep_white_r')), parseInt(getValue('rep_white_b')), parseInt(getValue('rep_white_g')), parseInt(getValue('rep_white_a'))]
   }
-  console.log(options);
   parent.postMessage({ pluginMessage: { type: 'dither-image', options: options } }, '*');
 }
 
