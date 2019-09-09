@@ -4,7 +4,7 @@ A Figma plugin that helps you to easily add dithering effects to images right th
 # 💡 Features
 - Faster Image processing with the use of Web worker.
 - Mutiple dithering at once with multiple item selection.
-- Provides two image dithering methods out of the box.
+- Provides two image dithering methods out of the box Threshold and Atkinson dithering.
 - Easy to use UI to apply dithering effect.
 - Grayscale image processing support.
 - Now able to dither/process each channel (R, G and B) separately, producing interesting effects.
@@ -23,6 +23,9 @@ The shot taken below is a fresh dithered image in a Figma scene. 🔥
 # Getting Started
 
 # Resources
-
+Stuffs I found really helpful when I was developing FigmaDither are as follows.
+- [Coding Challenge #90: Floyd-Steinberg Dithering](https://www.youtube.com/watch?v=0L2n8Tg2FwI)
+- [Canvas-dither by @ticky](https://github.com/ticky/canvas-dither)
+- [Wikipedia](https://en.wikipedia.org/wiki/Dither)
 
 # LICENSE
