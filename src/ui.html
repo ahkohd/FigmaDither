@@ -1,87 +1,63 @@
-<h4> Conversion Method</h4>
-<div>
-    <label class="r-container" for="rdo_greyscale_luminance">
-        Luminance
-        <input type="radio" name="greyscale_method" id="rdo_greyscale_luminance" value="Luminance" checked="true" />
-        <span class="checkmark"></span>
-    </label>
-    <br>
-    <label class="r-container" for="rdo_greyscale_average">RGB Average
-        <input type="radio" name="greyscale_method" id="rdo_greyscale_average" value="RGB Average" />
-        <span class="checkmark"></span>
-    </label>
-    <br />
-    <label class="r-container" for="rdo_greyscale_disable">Disabled
-        <input type="radio" name="greyscale_method" id="rdo_greyscale_disable" value="Disabled" />
-        <span class="checkmark"></span>
-    </label><br />
-</div>
+    <div class="section-title">Conversion Method</div>
+    <select name="" id="select-menu1" name="greyscale_method" class="select-menu">
+        <option value="Luminance" selected="selected">Luminance</option>
+        <option value="RGB Average">RGB Average</option>
+        <option value="Disabled">Disabled</option>
+    </select>
 
-<br>
-<h4>Dithering Method</h4>
-<div>
-    <label class="r-container" for="rdo_atkinson">Atkinson Dithering
-        <input type="radio" name="dither_method" id="rdo_dither_atkinson" value="Atkinson Dithering" checked="true" />
-        <span class="checkmark"></span>
-    </label><br />
-    <label class="r-container" for="rdo_threshold">Threshold
-        <input type="radio" name="dither_method" id="rdo_dither_threshold" value="Threshold" />
-        <span class="checkmark"></span>
-    </label>
-    <br />
+
+    <div class="section-title">Dithering Method</div>
+    <select name="" id="select-menu1" name="dither_method" class="select-menu">
+        <option value="Atkinson Dithering" selected="selected">Atkinson Dithering</option>
+        <option value="Threshold">Threshold</option>
+    </select>
+
+
     <div class="slidecontainer">
-        <div>Threshold Value</div>
+        <div class="label">Threshold Value</div>
         <input id="threshold" class="slider" type="range" min="0" max="255" value="127" step="1"
             title="Brightness threshold" />
     </div>
-</div>
-
-<br>
-<label class="c-container" for="chk_replace_colours">Replace Colours
-    <input type="checkbox" name="replace_colours" id="chk_replace_colours" />
-    <span class="checkmark"></span>
-</label>
-<br>
-<h4>Replace black with (R, G, B, A)</h4><br/>
-<div class="slidecontainer">
-    <div>Red</div>
-    <input id="rep_black_r" class="slider" type="range" min="0" max="255" value="0" step="1" />
-</div> <br />
-<div class="slidecontainer">
-    <div>Blue</div>
-<input id="rep_black_g" class="slider" type="range" min="0" max="255" value="0" step="1" />
-</div>
-<br />
-<div class="slidecontainer">
-    <div>Green</div>
-<input id="rep_black_b" class="slider" type="range" min="0" max="255" value="0" step="1" />
-</div>
-<br />
-<div class="slidecontainer">
-    <div>Alpha</div>
-<input id="rep_black_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
-</div><br />
-<h4>Replace white with (R, G, B, A)</h4>
-<br />
-<div class="slidecontainer">
-    <div>Red</div>
-<input id="rep_white_r" class="slider" type="range" min="0" max="255" value="255" step="1" />
-</div><br />
-<div class="slidecontainer">
-    <div>Blue</div>
-<input id="rep_white_g" class="slider" type="range" min="0" max="255" value="255" step="1" /> 
-</div>
-<br />
-<div class="slidecontainer">
-    <div>Green</div>
-<input id="rep_white_b" class="slider" type="range" min="0" max="255" value="255" step="1" />
-</div>
- <br />
- <div class="slidecontainer">
-    <div>Alpha</div>
-<input id="rep_white_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
-</div>
-<br />
-
-<button id="dither" class="action">Dither</button>
-<button id="cancel">Cancel</button>
+    <div class="checkbox">
+        <input class="checkbox__box" type="checkbox" name="replace_colours" id="chk_replace_colours">
+        <label class="checkbox__label" for="chk_replace_colours">Replace Colours</label>
+    </div>
+   
+    <div class="section-title">Replace black with RGBA</div>
+    <div class="slidecontainer">
+        <div class="label">Red</div>
+        <input id="rep_black_r" class="slider" type="range" min="0" max="255" value="0" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Blue</div>
+        <input id="rep_black_g" class="slider" type="range" min="0" max="255" value="0" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Green</div>
+        <input id="rep_black_b" class="slider" type="range" min="0" max="255" value="0" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Alpha</div>
+        <input id="rep_black_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
+    </div>
+    <div class="section-title">Replace white with RGBA</div>
+    <div class="slidecontainer">
+        <div class="label">Red</div>
+        <input id="rep_white_r" class="slider" type="range" min="0" max="255" value="255" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Blue</div>
+        <input id="rep_white_g" class="slider" type="range" min="0" max="255" value="255" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Green</div>
+        <input id="rep_white_b" class="slider" type="range" min="0" max="255" value="255" step="1" />
+    </div>
+    <div class="slidecontainer">
+        <div class="label">Alpha</div>
+        <input id="rep_white_a" class="slider" type="range" min="0" max="255" value="255" step="1" />
+    </div>
+    <div class="space">
+        <button id="dither" class='button button--primary'>Dither</button>
+        <button id="cancel" class='button button--secondary'>Cancel</button>
+    </div>

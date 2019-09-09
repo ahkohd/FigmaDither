@@ -1,3 +1,5 @@
+import './figma-plugin-ds.min.js';
+import './figma-plugin-ds.min.css';
 import './ui.css';
 
 document.getElementById('dither').onclick = () => {
@@ -10,3 +12,12 @@ document.getElementById('dither').onclick = () => {
 document.getElementById('cancel').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
 }
+
+ //initialize javascript
+ (window as any).selectMenu.init();
+ console.log((window as any).selectMenu);
+
+ //settings
+ (window as any).selectMenu.init({
+   position: 'positionToSelection' //other options: 'under', 'overlap'
+ });

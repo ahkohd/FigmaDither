@@ -1,173 +1,17 @@
-/* @font-face {
-    font-family: Roboto;
-    src: url('/fonts/Roboto-Regular.ttf');
-} */
-
 body {
-    margin: 0;
-    padding: 20px 15px 10px 15px;
-    outline: 0;
-    box-sizing: border-box;
-    font-family: sans-serif !important;
-    font-size: 12px !important;
+  margin: 0;
+  padding: 5px 10px 16px 10px;
+  outline: 0;
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    margin: 0 0 10px 0 !important;
+.label {
+  color: #444;
 }
 
-/* The r-container */
-.r-container {
-    display: block;
-    position: relative;
-    padding-left: 28px;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
-  /* Hide the browser's default radio button */
-  .r-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-  
-  /* Create a custom radio button */
-  .checkmark {
-    position: absolute;
-    top: -6px !important;
-    left: 0 !important;
-    height: 25px;
-    width: 25px;
-    transform: scale(.7);
-    background-color: #eee;
-    border-radius: 50%;
-  }
-  
-  /* On mouse-over, add a grey background color */
-  .r-container:hover input ~ .checkmark {
-    background-color: #ccc;
-  }
-  
-  /* When the radio button is checked, add a blue background */
-  .r-container input:checked ~ .checkmark {
-    background-color: #2196F3;
-  }
-  
-  /* Create the indicator (the dot/circle - hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-  
-  /* Show the indicator (dot/circle) when checked */
-  .r-container input:checked ~ .checkmark:after {
-    display: block;
-  }
-  
-  /* Style the indicator (dot/circle) */
-  .r-container .checkmark:after {
-       top: 9px;
-      left: 9px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: white;
-  }
-
-  button {
-      border: none;
-      border-radius: 3px;
-      padding: 8px 10px;
-      background: transparent;
-      border: 1px solid transparent;
-      outline: none;
-  }
-
-  button.action {
-    border-color: black;
-  }
-
-  button:hover, button:focus {
-      border-color: transparent;
-      background: rgba(0, 0, 0, .1);
-  }
-
-  button.action:hover, button.action:focus {
-    background: transparent;
-    color: #333;
-    border-color: black;
-}
-
-/* checkbox */
-/* Customize the label (the container) */
-.c-container {
-  display: block;
-  position: relative;
-  padding-left: 28px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default checkbox */
-.c-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-}
-
-/* On mouse-over, add a grey background color */
-.c-container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.c-container input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.c-container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the checkmark/indicator */
-.c-container .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+.space {
+  margin: 10px 0 0 7px;
 }
 
 .slidecontainer {
@@ -177,22 +21,23 @@ h1, h2, h3, h4, h5, h6 {
 
 .slidecontainer div {
   flex: 1;
-} 
+}
 .slidecontainer .slider {
   width: 50%;
 }
 
 /* The slider itself */
 .slider {
-  -webkit-appearance: none;  /* Override default CSS styles */
+  -webkit-appearance: none; /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
   height: 1px; /* Specified height */
   background: #555; /* Grey background */
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+  margin-top: 16px;
 }
 
 /* Mouse-over effects */
