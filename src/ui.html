@@ -1,5 +1,5 @@
     <div class="section-title">Conversion Method</div>
-    <select name="" id="greyscale_method" name="greyscale_method" class="select-menu">
+    <select name="greyscale_method" id="greyscale_method" name="greyscale_method" class="select-menu">
         <option value="Luminance" selected="selected">Luminance</option>
         <option value="RGB Average">RGB Average</option>
         <option value="Disabled">Disabled</option>
@@ -7,7 +7,7 @@
 
 
     <div class="section-title">Dithering Method</div>
-    <select name="" id="dither_method" name="dither_method" class="select-menu">
+    <select name="dither_method" id="dither_method" name="dither_method" class="select-menu">
         <option value="Atkinson Dithering" selected="selected">Atkinson Dithering</option>
         <option value="Threshold">Threshold</option>
     </select>
@@ -16,7 +16,7 @@
     <div class="slidecontainer">
         <div class="label">Threshold Value</div>
         <input id="threshold" class="input" type="number" min="0" max="255" value="127"
-            title="Brightness threshold" />
+            title="Brightness threshold" disabled />
     </div>
     <div class="checkbox">
         <input class="checkbox__box" type="checkbox" name="replace_colours" id="chk_replace_colours">
@@ -26,36 +26,36 @@
     <div class="section-title">Replace black with RGBA</div>
     <div class="slidecontainer">
         <div class="label">Red</div>
-        <input id="rep_black_r" class="input" type="number" min="0" max="255" value="0"/>
+        <input id="rep_black_r" class="input ci" type="number" min="0" max="255" disabled value="0"/>
     </div>
     <div class="slidecontainer">
         <div class="label">Blue</div>
-        <input id="rep_black_g" class="input" type="number" min="0" max="255" value="0" />
+        <input id="rep_black_g" class="input ci" type="number" min="0" max="255" disabled value="0" />
     </div>
     <div class="slidecontainer">
         <div class="label">Green</div>
-        <input id="rep_black_b" class="input" type="number" min="0" max="255" value="0" />
+        <input id="rep_black_b" class="input ci" type="number" min="0" max="255" disabled value="0" />
     </div>
     <div class="slidecontainer">
         <div class="label">Alpha</div>
-        <input id="rep_black_a" class="input" type="number" min="0" max="255" value="255" />
+        <input id="rep_black_a" class="input ci" type="number" min="0" max="255" disabled value="255" />
     </div>
     <div class="section-title">Replace white with RGBA</div>
     <div class="slidecontainer">
         <div class="label">Red</div>
-        <input id="rep_white_r" class="input" type="number" min="0" max="255" value="255" />
+        <input id="rep_white_r" class="input ci" type="number" min="0" max="255" disabled value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Blue</div>
-        <input id="rep_white_g" class="input" type="number" min="0" max="255" value="255" />
+        <input id="rep_white_g" class="input ci" type="number" min="0" max="255" disabled value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Green</div>
-        <input id="rep_white_b" class="input" type="number" min="0" max="255" value="255" />
+        <input id="rep_white_b" class="input ci" type="number" min="0" max="255" disabled value="255" />
     </div>
     <div class="slidecontainer">
         <div class="label">Alpha</div>
-        <input id="rep_white_a" class="input" type="number" min="0" max="255" value="255" />
+        <input id="rep_white_a" class="input ci" type="number" min="0" max="255" disabled value="255" />
     </div>
     <div class="checkbox">
         <input class="checkbox__box" type="checkbox" name="keep_image" id="keep_image">
