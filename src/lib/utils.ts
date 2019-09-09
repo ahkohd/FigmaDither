@@ -2,6 +2,7 @@ import { Queue } from './Queue';
 import workerTemplate from '../worker/entry.html';
 import ImageFillData from './IImageFillData';
 import JobResult from './IJobsResult';
+import DitherOptions from './IDitherOptions';
 
 /**
  * Gets the current User Selection(s)
@@ -82,7 +83,7 @@ export function addTaskToPool(task: any, queue: Queue<any>) {
  * @returns Promise<JobResult[]> Returns an array of JobResult
  */
 
-export function processJobs(queue: Queue<any>): Promise<JobResult[]> {
+export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<JobResult[]> {
   const jobs = queue.toArray();
   // console.log("All jobs", jobs);
 
@@ -91,7 +92,8 @@ export function processJobs(queue: Queue<any>): Promise<JobResult[]> {
   // when it's done.
   figma.showUI(workerTemplate, { visible: true,  width: 200, height: 125});
   // Send the raw bytes of the file to the worker.
-  figma.ui.postMessage(jobs);
+  console.log('sent!', options);
+  figma.ui.postMessage({jobs: jobs, options: options});
   // Wait for the worker's response.
   const jobsResult = new Promise<JobResult[]>((resolve, reject) => {
     figma.ui.onmessage = value => resolve(value)
@@ -119,7 +121,7 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  * @param  {readonlySceneNode[]} currentSelectionsWithImageFills
  */
 
- export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[]) {
+ export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[], options: DitherOptions) {
   return new Promise((resolve, reject) => {
     let TASKS = new Queue();
     let nodeFills: ImageFillData[] = [];
@@ -136,7 +138,7 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
       // wait till all jobs are added..
       if (index == currentSelectionsWithImageFills.length - 1) {
         // start processing jobs..
-        applyProcessResults(await processJobs(TASKS), nodeFills, resolve);
+        applyProcessResults(await processJobs(TASKS, options), nodeFills, resolve);
       }
     });
   });

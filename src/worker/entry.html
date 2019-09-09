@@ -1,6 +1,6 @@
 <style>
-
-  body, html {
+  body,
+  html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -10,14 +10,14 @@
     display: flex;
   }
 
-  .loaderContainer
-  {
+  .loaderContainer {
     margin: auto;
     text-align: center;
     height: 55px;
     display: flex;
     flex-direction: column;
   }
+
   .lds-ring {
     display: inline-block;
     position: relative;
@@ -73,10 +73,15 @@
 
 
 <div class="loaderContainer">
-    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-    <div class="loading-text">
-        dithering..
-    </div>
+  <div class="lds-ring">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="loading-text">
+    dithering..
+  </div>
 </div>
 <script>
   // Encoding an image is also done by sticking pixels in an
@@ -108,7 +113,11 @@
     canvas.height = image.height
     ctx.drawImage(image, 0, 0)
     const imageData = ctx.getImageData(0, 0, image.width, image.height)
-    return imageData
+    return {
+      imageData: imageData,
+      width: image.width,
+      height: image.width
+    }
   }
 
   // Create an event handler to receive messages from the main
@@ -119,10 +128,11 @@
     // plugin. In more complex plugins, you'll want to check the
     // type of the message.
     const results = [];
-    const jobs = event.data.pluginMessage;
+    const recvedData = event.data.pluginMessage;
+    const jobs = recvedData.jobs;
     for (const job of jobs) {
       results.push({
-        imageBytes: await processDither(job),
+        imageBytes: await processDither(job, recvedData.options),
         fillData: job.fillData
       });
     }
@@ -131,24 +141,188 @@
     }, "*");
   };
 
-  async function processDither(job) {
+  async function processDither(job, options) {
     const bytes = job.imageBytes;
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const imageData = await decode(canvas, ctx, bytes);
-    const pixels = imageData.data;
+    const imageDetails = await decode(canvas, ctx, bytes);
+    console.log(imageDetails);
+    const preset = {
+      image: {
+        data: imageDetails.imageData,
+        width: imageDetails.width,
+        height: imageDetails.height
+      },
+      processing: {
+        greyscaleMethod: options.greyscale_method,
+        ditherMethod: options.dither_method,
+        ditherThreshold: options.threshold,
+        replaceColours: options.chk_replace_colours,
+        replaceColourMap: {
+          black: {
+            r: options.rep_black[0],
+            g: options.rep_black[1],
+            b: options.rep_black[2],
+            a: options.rep_black[3]
+          },
+          white: {
+            r: options.rep_white[0],
+            g: options.rep_white[1],
+            b: options.rep_white[2],
+            a: options.rep_white[3]
+          }
+        }
+      }
+    };
 
-    // Do the actual work of inverting the colors.
-    for (let i = 0; i < pixels.length; i += 4) {
-      pixels[i + 0] = 255 - pixels[i + 0];
-      pixels[i + 1] = 255 - pixels[i + 1];
-      pixels[i + 2] = 255 - pixels[i + 2];
-      // Don't invert the alpha channel.
+    // Do the actual dither...
+    const result = dither(preset);
+
+    const newBytes = await encode(canvas, ctx, result.image.data);
+    return newBytes;
+  }
+
+
+  // async function processDither(job) {
+  //   const bytes = job.imageBytes;
+
+  //   const canvas = document.createElement("canvas");
+  //   const ctx = canvas.getContext("2d");
+
+  //   const imageData = await decode(canvas, ctx, bytes);
+  //   const pixels = imageData.data;
+
+  //   // Do the actual work of inverting the colors.
+  //   for (let i = 0; i < pixels.length; i += 4) {
+  //     pixels[i + 0] = 255 - pixels[i + 0];
+  //     pixels[i + 1] = 255 - pixels[i + 1];
+  //     pixels[i + 2] = 255 - pixels[i + 2];
+  //     // Don't invert the alpha channel.
+  //   }
+
+  //   const newBytes = await encode(canvas, ctx, imageData);
+  //   return newBytes;
+  // }
+
+
+
+
+
+
+  //////////////////////////////////////////////// Dither methods 
+
+  // Convert image data to greyscale based on luminance.
+  function greyscale_luminance(image) {
+    for (var i = 0; i <= image.data.length; i += 4) {
+
+      image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt(image.data[i] * 0.21 + image.data[i + 1] *
+        0.71 +
+        image.data[i + 2] * 0.07, 10);
+
+    }
+    return image;
+  }
+
+  // Convert image data to greyscale based on average of R, G and B values.
+  function greyscale_average(image) {
+
+    for (var i = 0; i <= image.data.length; i += 4) {
+
+      image.data[i] = image.data[i + 1] = image.data[i + 2] = parseInt((image.data[i] + image.data[i + 1] + image
+        .data[
+          i + 2]) / 3, 10);
+
+    }
+    return image;
+  }
+
+  // Apply Atkinson Dither to Image Data
+  function dither_atkinson(image, imageWidth, drawColour) {
+    skipPixels = 4;
+
+    if (!drawColour)
+      drawColour = false;
+
+    if (drawColour == true)
+      skipPixels = 1;
+
+    imageLength = image.data.length;
+
+    for (currentPixel = 0; currentPixel <= imageLength; currentPixel += skipPixels) {
+
+      if (image.data[currentPixel] <= 128) {
+
+        newPixelColour = 0;
+
+      } else {
+
+        newPixelColour = 255;
+
+      }
+
+      err = parseInt((image.data[currentPixel] - newPixelColour) / 8, 10);
+      image.data[currentPixel] = newPixelColour;
+
+      image.data[currentPixel + 4] += err;
+      image.data[currentPixel + 8] += err;
+      image.data[currentPixel + (4 * imageWidth) - 4] += err;
+      image.data[currentPixel + (4 * imageWidth)] += err;
+      image.data[currentPixel + (4 * imageWidth) + 4] += err;
+      image.data[currentPixel + (8 * imageWidth)] += err;
+
+      if (drawColour == false)
+        image.data[currentPixel + 1] = image.data[currentPixel + 2] = image.data[currentPixel];
+
     }
 
-    const newBytes = await encode(canvas, ctx, imageData);
-    return newBytes;
+    return image.data;
+  }
+
+
+  function dither_threshold(image, threshold_value) {
+
+    for (var i = 0; i <= image.data.length; i += 4) {
+
+      image.data[i] = (image.data[i] > threshold_value) ? 255 : 0;
+      image.data[i + 1] = (image.data[i + 1] > threshold_value) ? 255 : 0;
+      image.data[i + 2] = (image.data[i + 2] > threshold_value) ? 255 : 0;
+
+    }
+  }
+
+  function replace_colours(image, black, white) {
+
+    for (var i = 0; i <= image.data.length; i += 4) {
+
+      image.data[i] = (image.data[i] < 127) ? black.r : white.r;
+      image.data[i + 1] = (image.data[i + 1] < 127) ? black.g : white.g;
+      image.data[i + 2] = (image.data[i + 2] < 127) ? black.b : white.b;
+      image.data[i + 3] = (((image.data[i] + image.data[i + 1] + image.data[i + 2]) / 3) < 127) ? black.a : white.a;
+
+    }
+
+  }
+
+  function dither(data) {
+    if (data.processing.greyscaleMethod == "Luminance") {
+      greyscale_luminance(data.image.data);
+    } else if (data.processing.greyscaleMethod == "RGB Average") {
+      greyscale_average(data.image.data);
+    }
+
+    if (data.processing.ditherMethod == "Atkinson Dithering") {
+      dither_atkinson(data.image.data, data.image.width, (data.processing.greyscaleMethod == "Disabled"));
+
+    } else if (data.processing.ditherMethod == "Threshold") {
+      dither_threshold(data.image.data, data.processing.ditherThreshold);
+    }
+
+    if (data.processing.replaceColours == true) {
+      replace_colours(data.image.data, data.processing.replaceColourMap.black, data.processing.replaceColourMap
+        .white);
+    }
+    return data;
   }
 </script>
