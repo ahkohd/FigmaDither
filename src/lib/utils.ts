@@ -19,7 +19,6 @@ export function getCurrentSelections(): readonly SceneNode[] {
  * @returns SceneNode
  */
 export function filterNodesWithFills(nodes: readonly SceneNode[]): SceneNode[] {
-  console.log(nodes);
   const nodeWithFills = nodes.filter(node => {
     if("fills" in node)
     {
