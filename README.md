@@ -12,12 +12,12 @@ A Figma plugin that helps you to easily add dithering effects to images right th
 - Easily toggle between swaping out old image with the new dithered image or keeping both.
 
 # 🎥 Demo
+![Dither in Action](./demo.gif)
 
 # 📸 Screenshots
 The shot taken below is a fresh dithered image in a Figma scene. 🔥
 
 ![Dithered Image 🔥](./dither-shot.png)
-
 
 # ☕️ Donate
 <a href="https://www.buymeacoffee.com/jwlE0N8" target="_blank"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
