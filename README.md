@@ -1,4 +1,5 @@
-![Figma Dither Logo](./fd.png)
+<img src="./fd.png" height="80" style="display: table; margin: 0 auto;"/>
+
 # ✨ Figma Dither
 A Figma plugin that helps you to easily add dithering effects to images right there in your scene. ✨🦄
 
