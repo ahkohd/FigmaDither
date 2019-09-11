@@ -5,9 +5,10 @@
 
 body {
   margin: 0;
-  padding: 5px 10px 16px 10px;
   outline: 0;
   box-sizing: border-box;
+  padding-top: 5px;
+  padding-bottom: 16px;
   font-family: Inter, sans-serif;
 }
 
@@ -23,6 +24,14 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
+}
+
+.ui {
+  padding: 0px 10px 0px 10px;
+  height: 100%;
+  width: 98%;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .input
@@ -41,21 +50,16 @@ input[type=number]::-webkit-outer-spin-button {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #999;
   border-radius: 5px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }

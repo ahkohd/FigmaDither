@@ -10,6 +10,10 @@
     display: flex;
   }
 
+  * {
+    user-select: none;
+  }
+
   .loaderContainer {
     margin: auto;
     text-align: center;
@@ -84,20 +88,13 @@
   </div>
 </div>
 <script>
-////////////////////////////////////////////////////////////
-///
-///   
-///
-///
-///
-///////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////// WEB WORKER script in string...
+    //////////////////////////////////////////////// WEB WORKER script in string...
 
-// The code contained in this string is the actual logics to manipulate  canvas image
-// and carry out the dithering effect..
+  // The code contained in this string is the actual logics to manipulate  canvas image
+  // and carry out the dithering effect..
 
-const workerScript = `
+  const workerScript = `
   // Convert image data to greyscale based on luminance.
 function greyscale_luminance(image) {
     for (var i = 0; i <= image.data.length; i += 4) {
@@ -278,7 +275,7 @@ self.addEventListener("message", function (e) { self.postMessage(dither(e.data))
 
     // contain the processed (dithered) imagebytes...
     const results = [];
-    
+
     //  => Take a look at the sent data.
     const recvedData = event.data.pluginMessage;
 
