@@ -5,6 +5,7 @@ import './ui.css';
 
 let DITHER_WORKER;
 let imageBytes;
+let isFirstEnter: boolean = false;
 
 function postJob(type: string) {
   const options = {
@@ -112,6 +113,18 @@ window.onmessage = (msg) => {
 }
 
 
+document.onmouseleave = () => {
+  parent.postMessage({ pluginMessage: { type: 'destory-preview'} }, '*');
+}
+
+
+document.onmouseenter = () => {
+  if(!isFirstEnter) {
+    isFirstEnter = true;
+    return;
+  }
+  parent.postMessage({ pluginMessage: { type: 'show-preview'} }, '*');
+}
 
 
 

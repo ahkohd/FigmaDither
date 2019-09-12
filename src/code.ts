@@ -10,6 +10,16 @@ import {
 } from "./lib/utils";
 import JobResult from "./lib/IJobsResult";
 
+let firstImagefillsDataOnPreview;
+
+function setupPreview(previewNode)
+{
+   // send preview image bytes to the ui
+   firstImagefillsDataOnPreview = getImageFillsFromNode(previewNode)[0];
+   getImageBytes(firstImagefillsDataOnPreview.imageFill).then(bytes => {
+     figma.ui.postMessage({imageBytes: bytes, type: 'preview-node-image-bytes'});
+   });
+}
 // This plugin will open a modal to prompt the user to enter a number, and
 // it will then create that many rectangles on the screen.
 
@@ -21,6 +31,7 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
   figma.notify('Figma Dither: Please select at lease one item with image fill.');
   figma.closePlugin();
 } else {
+
   let previewNode: SceneNode;
 
   if (multipleSelections()) {
@@ -32,15 +43,7 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
   // This shows the HTML page in "ui.html".
   figma.showUI(__html__, { height: 500, width: 270 });
 
-
-
-  // send preview image bytes to the ui
-  let firstImagefillsDataOnPreview = getImageFillsFromNode(previewNode)[0];
-  getImageBytes(firstImagefillsDataOnPreview.imageFill).then(bytes => {
-    figma.ui.postMessage({imageBytes: bytes, type: 'preview-node-image-bytes'});
-  });
-
-
+  setupPreview(previewNode);
   // Calls to "parent.postMessage" from within the HTML page will trigger this
   // callback. The callback will be passed the "pluginMessage" property of the
   // posted message.
@@ -82,6 +85,20 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
         console.log('preview result applied!');
       });
     }
+
+
+    if(msg.type == 'destory-preview')
+    {
+      if(!previewNode.removed) previewNode.remove();
+    }
+
+    if(msg.type == 'show-preview')
+    {
+      previewNode = figma.currentPage.selection[0].clone();
+      setupPreview(previewNode);
+    }
+
+
 
     // if(msg.type == 'user-closed-plugin')
     // {
