@@ -29,9 +29,19 @@ function setupPreview(previewNode: SceneNode)
    });
 }
 
-function getPreview() {
+/**
+ * Gets the last created PreviewNode
+ * @returns SceneNode
+ */
+
+function getPreview(): SceneNode {
   return previewNodes[previewNodes.length -1];
 }
+
+/**
+ * Adds a new PreviewNode to the existing ones.
+ * @param  {} callback? Called after a successsfull addition
+ */
 
 function addNewPreviewNode(callback?) {
   const result = filterNodesWithFills(figma.currentPage.selection);
