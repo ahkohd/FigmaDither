@@ -6,6 +6,9 @@ import './ui.css';
 let DITHER_WORKER;
 let imageBytes;
 let isFirstEnter: boolean = false;
+let sendRenderingToastTimeOut;
+let timeToWaitToTellUserAboutASlowPreviewRender = 3000;
+let livePreview = true;
 
 function postJob(type: string) {
   const options = {
@@ -15,7 +18,7 @@ function postJob(type: string) {
     chk_replace_colours: (document.getElementById('chk_replace_colours') as HTMLInputElement).checked,
     rep_black: [parseInt(getValue('rep_black_r')), parseInt(getValue('rep_black_b')), parseInt(getValue('rep_black_g')), parseInt(getValue('rep_black_a'))],
     rep_white: [parseInt(getValue('rep_white_r')), parseInt(getValue('rep_white_b')), parseInt(getValue('rep_white_g')), parseInt(getValue('rep_white_a'))],
-    keep_image: (document.getElementById('keep_image') as HTMLInputElement).checked
+    keep_image: (document.getElementById('keep_image') as HTMLInputElement).checked,
   }
 
   if (type == 'dither-image-preview') {
@@ -79,6 +82,18 @@ document.getElementById('chk_replace_colours').onchange = function (e) {
   postJob('dither-image-preview');
 }
 
+
+// Activate color input boxes when user enables replace with color..
+document.getElementById('live_preview').onchange = function (e) {
+  livePreview = !(document.getElementById('live_preview') as HTMLInputElement).checked;
+  if(!livePreview)
+  {
+    parent.postMessage({ pluginMessage: { type: 'disable-preview' } }, '*');
+  } else {
+    parent.postMessage({ pluginMessage: { type: 'enable-preview' } }, '*');
+  }
+}
+
 // on greyscale method change send preview job
 document.getElementById('greyscale_method').onchange = function () {
   setTimeout(() => {
@@ -124,12 +139,14 @@ function debounce(func, wait, immediate) {
 };
 
 const efficientLeaveCall = debounce(function () {
+  if(!livePreview) return;
   parent.postMessage({ pluginMessage: { type: 'destory-preview' } }, '*');
 }, 250, false);
 
 document.onmouseleave = efficientLeaveCall;
 
 const efficientEnterCall = debounce(function () {
+  if(!livePreview) return;
   if (!isFirstEnter) {
     isFirstEnter = true;
     return;
@@ -302,6 +319,15 @@ async function decode(canvas, ctx, bytes) {
 DITHER_WORKER = loadWebWorker(workerScript);
 
 function processPreview(config) {
+
+  // notify the user if the preview is taking longer time..
+  if(sendRenderingToastTimeOut) clearTimeout(sendRenderingToastTimeOut);
+  sendRenderingToastTimeOut = setTimeout(()=> {
+    clearTimeout(sendRenderingToastTimeOut);
+    parent.postMessage({ pluginMessage: { type: 'notify-slow-preview-rendering' }}, '*');
+
+  }, timeToWaitToTellUserAboutASlowPreviewRender);
+
   processDither({ imageBytes: imageBytes }, config).then(processedPreviewImageBytes => {
     // send process preview image to bg..
     parent.postMessage({ pluginMessage: { type: 'processed-preview-imagebytes', imageBytes: processedPreviewImageBytes } }, '*');

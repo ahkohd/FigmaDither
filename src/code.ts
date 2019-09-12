@@ -128,7 +128,7 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
 
 
     // Destroys all existing PreviewNode..
-    if(msg.type == 'destory-preview')
+    if(msg.type == 'destory-preview' || msg.type == 'disable-preview')
     {
       if(previewNodes.length!=0) {
         previewNodes.forEach(node => {
@@ -138,10 +138,17 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
       previewNodes = [];
     }
 
+    if(msg.type == 'notify-slow-preview-rendering')
+    {
+      figma.notify('Figma Dither: Preview still rendering... 🤳', {
+        timeout: 500        
+      });
+    }
+
     // Trys to add a new PreviewNode...
     // if it fails - (1). because no GemetryMixin is selected
     // (2). More than one Nodes selected.
-    if(msg.type == 'show-preview')
+    if(msg.type == 'show-preview' || msg.type == 'enable-preview')
     {
       addNewPreviewNode(() => {
         figma.notify('Figma Dither: Re-rendering preview 🤳', {
