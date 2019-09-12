@@ -11,8 +11,16 @@ import {
 import JobResult from "./lib/IJobsResult";
 
 let firstImagefillsDataOnPreview;
+let previewNodes: SceneNode[] = [];
 
-function setupPreview(previewNode)
+
+/**
+ * Sets up the preview node and sends it image bytes to the ui
+ * @param  {SceneNode} previewNode
+ * @param  {ImageFillData} firstImagefillsDataOnPreview
+ */
+
+function setupPreview(previewNode: SceneNode)
 {
    // send preview image bytes to the ui
    firstImagefillsDataOnPreview = getImageFillsFromNode(previewNode)[0];
@@ -20,6 +28,29 @@ function setupPreview(previewNode)
      figma.ui.postMessage({imageBytes: bytes, type: 'preview-node-image-bytes'});
    });
 }
+
+function getPreview() {
+  return previewNodes[previewNodes.length -1];
+}
+
+function addNewPreviewNode(callback?) {
+  const result = filterNodesWithFills(figma.currentPage.selection);
+  if( result.length == 0) {
+    figma.notify('Figma Dither: Please select at lease one item with image fill.', {
+      timeout: 1000
+    });
+    return;
+  } else if(result.length > 1)
+  {
+    figma.notify('Figma Dither: More than one selection disables live preview.', {
+      timeout: 1000
+    });
+    return;
+  }
+  previewNodes.push(figma.currentPage.selection[0].clone());
+  if(callback) callback();
+}
+
 // This plugin will open a modal to prompt the user to enter a number, and
 // it will then create that many rectangles on the screen.
 
@@ -32,18 +63,17 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
   figma.closePlugin();
 } else {
 
-  let previewNode: SceneNode;
 
   if (multipleSelections()) {
     figma.notify('Figma Dither: More than one selection disables live preview.');
   } else {
-    previewNode = figma.currentPage.selection[0].clone();
+    addNewPreviewNode();
   }
 
   // This shows the HTML page in "ui.html".
   figma.showUI(__html__, { height: 500, width: 270 });
 
-  setupPreview(previewNode);
+  setupPreview(getPreview());
   // Calls to "parent.postMessage" from within the HTML page will trigger this
   // callback. The callback will be passed the "pluginMessage" property of the
   // posted message.
@@ -55,22 +85,15 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
       } else {
         DoImageDither(currentSelections, msg.options)
           .then(function () {
-            closePlugin(previewNode);
+            closePlugin(getPreview());
           });
       }
     }
 
-    if (msg.type === "dither-image-preview") {
-      // DoImageDither([previewNode], msg.options, true)
-      //   .then(function () {
-      //     ///
-      //   });
-
-      //apply the effect to the previewNode
-    }
+  
 
     if (msg.type === "cancel") {
-      closePlugin(previewNode);
+      closePlugin(getPreview());
     }
 
     if(msg.type == "processed-preview-imagebytes")
@@ -81,31 +104,35 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
         fillData: firstImagefillsDataOnPreview,
         imageBytes: msg.imageBytes
       }
-      applyProcessResults([result], [firstImagefillsDataOnPreview], false, () => {
-        console.log('preview result applied!');
-      });
+
+      try {
+        applyProcessResults([result], [firstImagefillsDataOnPreview], false, () => {
+          console.log('preview result applied!');
+        });
+      } catch (e) {}
     }
 
 
     if(msg.type == 'destory-preview')
     {
-      if(!previewNode.removed) previewNode.remove();
+      if(previewNodes.length!=0) {
+        previewNodes.forEach(node => {
+          if(!node.removed) node.remove();
+        });
+      }
+      previewNodes = [];
     }
 
     if(msg.type == 'show-preview')
     {
-      previewNode = figma.currentPage.selection[0].clone();
-      setupPreview(previewNode);
+      
+      addNewPreviewNode(() => {
+        figma.notify('Figma Dither: Re-rendering preview 🤳', {
+          timeout: 1000
+        });
+        setupPreview(getPreview())
+      });
     }
-
-
-
-    // if(msg.type == 'user-closed-plugin')
-    // {
-    //   closePlugin(previewNode);
-    // }
-    // Make sure to close the plugin when you're done. Otherwise the plugin will
-    // keep running, which shows the cancel button at the bottom of the screen.
   };
 
 }

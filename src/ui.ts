@@ -112,19 +112,36 @@ window.onmessage = (msg) => {
   }
 }
 
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
 
-document.onmouseleave = () => {
+const efficientLeaveCall = debounce(function(){
   parent.postMessage({ pluginMessage: { type: 'destory-preview'} }, '*');
-}
+}, 250, false);
 
+document.onmouseleave = efficientLeaveCall;
 
-document.onmouseenter = () => {
+const efficientEnterCall = debounce(function(){
   if(!isFirstEnter) {
     isFirstEnter = true;
     return;
   }
   parent.postMessage({ pluginMessage: { type: 'show-preview'} }, '*');
-}
+}, 250, false);
+
+document.onmouseenter = efficientEnterCall;
 
 
 
