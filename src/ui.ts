@@ -101,44 +101,40 @@ inputSelectorList.forEach(selector => {
 
 
 window.onmessage = (msg) => {
-
   if (msg.data.pluginMessage.type == 'preview-node-image-bytes') {
-    console.log(msg.data.pluginMessage.imageBytes)
     imageBytes = msg.data.pluginMessage.imageBytes;
-
-
     // first run on ui show...
-  postJob('dither-image-preview');
+    postJob('dither-image-preview');
   }
 }
 
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
+  var timeout;
+  return function () {
+    var context = this, args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
 };
 
-const efficientLeaveCall = debounce(function(){
-  parent.postMessage({ pluginMessage: { type: 'destory-preview'} }, '*');
+const efficientLeaveCall = debounce(function () {
+  parent.postMessage({ pluginMessage: { type: 'destory-preview' } }, '*');
 }, 250, false);
 
 document.onmouseleave = efficientLeaveCall;
 
-const efficientEnterCall = debounce(function(){
-  if(!isFirstEnter) {
+const efficientEnterCall = debounce(function () {
+  if (!isFirstEnter) {
     isFirstEnter = true;
     return;
   }
-  parent.postMessage({ pluginMessage: { type: 'show-preview'} }, '*');
+  parent.postMessage({ pluginMessage: { type: 'show-preview' } }, '*');
 }, 250, false);
 
 document.onmouseenter = efficientEnterCall;
@@ -306,7 +302,6 @@ async function decode(canvas, ctx, bytes) {
 DITHER_WORKER = loadWebWorker(workerScript);
 
 function processPreview(config) {
-  console.log('do the do');
   processDither({ imageBytes: imageBytes }, config).then(processedPreviewImageBytes => {
     // send process preview image to bg..
     parent.postMessage({ pluginMessage: { type: 'processed-preview-imagebytes', imageBytes: processedPreviewImageBytes } }, '*');

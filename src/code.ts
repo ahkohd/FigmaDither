@@ -74,7 +74,8 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
 } else {
 
 
-  if (multipleSelections()) {
+  const isMultiple = multipleSelections();
+  if (isMultiple) {
     figma.notify('Figma Dither: More than one selection disables live preview.');
   } else {
     addNewPreviewNode();
@@ -83,7 +84,10 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
   // This shows the HTML page in "ui.html".
   figma.showUI(__html__, { height: 500, width: 270 });
 
-  setupPreview(getPreview());
+  if (!isMultiple) {
+    setupPreview(getPreview());
+  }
+
   // Calls to "parent.postMessage" from within the HTML page will trigger this
   // callback. The callback will be passed the "pluginMessage" property of the
   // posted message.
@@ -108,7 +112,7 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
 
     if(msg.type == "processed-preview-imagebytes")
     {
-      console.log('processed bytes', msg.imageBytes);
+      // console.log('processed bytes', msg.imageBytes);
       // apply processed image to preview node..
       const result: JobResult = {
         fillData: firstImagefillsDataOnPreview,
@@ -117,12 +121,13 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
 
       try {
         applyProcessResults([result], [firstImagefillsDataOnPreview], false, () => {
-          console.log('preview result applied!');
+          // console.log('preview result applied!');
         });
       } catch (e) {}
     }
 
 
+    // Destroys all existing PreviewNode..
     if(msg.type == 'destory-preview')
     {
       if(previewNodes.length!=0) {
@@ -133,9 +138,11 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
       previewNodes = [];
     }
 
+    // Trys to add a new PreviewNode...
+    // if it fails - (1). because no GemetryMixin is selected
+    // (2). More than one Nodes selected.
     if(msg.type == 'show-preview')
     {
-      
       addNewPreviewNode(() => {
         figma.notify('Figma Dither: Re-rendering preview 🤳', {
           timeout: 1000
