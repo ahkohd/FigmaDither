@@ -3,6 +3,7 @@
 A Figma plugin that helps you to easily add dithering effects to images right there in your scene. ✨🦄
 
 # 💡 Features
+⚡ Live preview as dither effects values are been changed.
 - Faster Image processing with the use of Web worker.
 - Mutiple dithering at once with multiple item selection.
 - Provides two image dithering methods out of the box Threshold and Atkinson dithering.
