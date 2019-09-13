@@ -5,15 +5,15 @@
 A Figma plugin that helps you to easily add dithering effects to images right there in your scene. ✨🦄
 
 # 💡 Features
-⚡ Live preview as dither effects values are been changed.
-😽 Easy to use UI to apply dithering effect.
-✨ Grayscale image processing support.
-🚀 Faster Image processing with the use of Web worker.
-🙌 Multiple dithering at once with multiple item selection.
-🎉 Provides two image dithering methods out of the box.
-💥 Now able to dither/process each channel (R, G and B) separately, producing interesting effects.
-🔥 Easily fine-tune your image dithering with color replacement options.
-👀 Easily toggle between swapping old image with the new dithered image or keeping both.
+- ⚡ Live preview as dither effects values are been changed.
+- 😽 Easy to use UI to apply dithering effect.
+- ✨ Grayscale image processing support.
+- 🚀 Faster Image processing with the use of Web worker.
+- 🙌 Multiple dithering at once with multiple item selection.
+- 🎉 Provides two image dithering methods out of the box.
+- 💥 Now able to dither/process each channel (R, G and B) separately, producing interesting effects.
+- 🔥 Easily fine-tune your image dithering with color replacement options.
+- 👀 Easily toggle between swapping old image with the new dithered image or keeping both.
 
 # 🎥 Demo
 ![Dither in Action](./demo-naruto.gif)
