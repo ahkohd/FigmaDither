@@ -14,7 +14,7 @@ export function getCurrentSelections(): readonly SceneNode[] {
 }
 
 /**
- * Filters nndes that have fills.
+ * Filters nodes that have Image fills.
  * @param  {readonlySceneNode[]} nodes
  * @returns SceneNode
  */
@@ -163,7 +163,7 @@ export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNod
  * @param  {keep} keepImageFills Keeps the original image fill instead of replacing it..
  * @param  {any} resolve
  */
-function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], keepImageFills: boolean = false, resolve: any) {
+export function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], keepImageFills: boolean = false, resolve: any) {
   // console.log(nodeFills);
   results.forEach((result, index) => {
     let processDitherEffect = BytesToImagePaintHashImage(result.imageBytes, result.fillData.imageFill);
@@ -183,4 +183,17 @@ function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], k
 
   // resolve thre promise after applying dithering effect.
   resolve();
+}
+
+
+export function multipleSelections()
+{
+  const selection = figma.currentPage.selection;
+  return (selection.length ==  1)  ? false : true;
+}
+
+export function closePlugin(previewNode?: SceneNode)
+{
+  if(previewNode) (previewNode as SceneNode).remove();
+  figma.closePlugin();
 }
