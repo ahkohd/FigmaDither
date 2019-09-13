@@ -6,8 +6,6 @@ import './ui.css';
 let DITHER_WORKER;
 let imageBytes;
 let isFirstEnter: boolean = false;
-let sendRenderingToastTimeOut;
-let timeToWaitToTellUserAboutASlowPreviewRender = 3000;
 let livePreview = true;
 
 function postJob(type: string) {
@@ -117,11 +115,14 @@ document.getElementById('threshold').onkeyup = function () {
   postJob('dither-image-preview');
 };
 
+let effCall  = debounce(function(){
+  postJob('dither-image-preview');
+}, 1000, false);
+
 const inputSelectorList = ['rep_black_r', 'rep_black_g', 'rep_black_b', 'rep_black_a', 'rep_white_r', 'rep_white_g', 'rep_white_b', 'rep_white_a'];
 inputSelectorList.forEach(selector => {
-  document.getElementById(selector).onkeyup = function () {
-    postJob('dither-image-preview');
-  }
+  document.getElementById(selector).onkeyup = effCall
+
 });
 
 
