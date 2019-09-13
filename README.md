@@ -17,7 +17,7 @@ A Figma plugin that helps you to easily add dithering effects to images right th
 
 # 🎥 Demo
 ![Dither in Action](./demo-naruto.gif)
-[Feel free to check out another demo](./demo.gif)
+[Feel free to check out another demo.](./demo.gif)
 # 📸 Screenshots
 The shot taken below is a fresh dithered image in a Figma scene. 🔥
 
