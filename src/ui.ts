@@ -36,6 +36,16 @@ function getValue(selector) {
   return (document.getElementById(selector) as HTMLInputElement).value;
 }
 
+function showIndicator()
+{
+  document.getElementById("loader").style.display = 'block';
+}
+
+function hideIndicator()
+{
+  document.getElementById("loader").style.display = 'none';
+}
+
 document.getElementById('cancel').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
 }
@@ -319,17 +329,11 @@ async function decode(canvas, ctx, bytes) {
 DITHER_WORKER = loadWebWorker(workerScript);
 
 function processPreview(config) {
-
-  // notify the user if the preview is taking longer time..
-  if(sendRenderingToastTimeOut) clearTimeout(sendRenderingToastTimeOut);
-  sendRenderingToastTimeOut = setTimeout(()=> {
-    clearTimeout(sendRenderingToastTimeOut);
-    parent.postMessage({ pluginMessage: { type: 'notify-slow-preview-rendering' }}, '*');
-
-  }, timeToWaitToTellUserAboutASlowPreviewRender);
+  showIndicator();
 
   processDither({ imageBytes: imageBytes }, config).then(processedPreviewImageBytes => {
     // send process preview image to bg..
+    hideIndicator();
     parent.postMessage({ pluginMessage: { type: 'processed-preview-imagebytes', imageBytes: processedPreviewImageBytes } }, '*');
   });
 }

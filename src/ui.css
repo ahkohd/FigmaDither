@@ -48,6 +48,14 @@ input[type=number]::-webkit-outer-spin-button {
   flex: 1;
 }
 
+.preview-indicator {
+  position: fixed;
+  bottom: 25px;
+  right: 20px;
+  z-index: 10;
+  display: none;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 6px;

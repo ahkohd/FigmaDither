@@ -138,13 +138,6 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
       previewNodes = [];
     }
 
-    if(msg.type == 'notify-slow-preview-rendering')
-    {
-      figma.notify('Figma Dither: Preview still rendering... 🤳', {
-        timeout: 500        
-      });
-    }
-
     // Trys to add a new PreviewNode...
     // if it fails - (1). because no GemetryMixin is selected
     // (2). More than one Nodes selected.
