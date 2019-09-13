@@ -10,7 +10,7 @@ A Figma plugin that helps you to easily add dithering effects to images right th
 🙌 Multiple dithering at once with multiple item selection.
 🎉 Provides two image dithering methods out of the box.
 💥 Now able to dither/process each channel (R, G and B) separately, producing interesting effects.
-😚 Easily fine-tune your image dithering with color replacement options.
+🔥 Easily fine-tune your image dithering with color replacement options.
 👀 Easily toggle between swapping old image with the new dithered image or keeping both.
 
 # 🎥 Demo
