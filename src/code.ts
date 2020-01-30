@@ -13,20 +13,21 @@ import JobResult from "./lib/IJobsResult";
 let firstImagefillsDataOnPreview;
 let previewNodes: SceneNode[] = [];
 
-
 /**
  * Sets up the preview node and sends it image bytes to the ui
  * @param  {SceneNode} previewNode
  * @param  {ImageFillData} firstImagefillsDataOnPreview
  */
 
-function setupPreview(previewNode: SceneNode)
-{
-   // send preview image bytes to the ui
-   firstImagefillsDataOnPreview = getImageFillsFromNode(previewNode)[0];
-   getImageBytes(firstImagefillsDataOnPreview.imageFill).then(bytes => {
-     figma.ui.postMessage({imageBytes: bytes, type: 'preview-node-image-bytes'});
-   });
+function setupPreview(previewNode: SceneNode) {
+  // send preview image bytes to the ui
+  firstImagefillsDataOnPreview = getImageFillsFromNode(previewNode)[0];
+  getImageBytes(firstImagefillsDataOnPreview.imageFill).then(bytes => {
+    figma.ui.postMessage({
+      imageBytes: bytes,
+      type: "preview-node-image-bytes"
+    });
+  });
 }
 
 /**
@@ -35,7 +36,7 @@ function setupPreview(previewNode: SceneNode)
  */
 
 function getPreview(): SceneNode {
-  return previewNodes[previewNodes.length -1];
+  return previewNodes[previewNodes.length - 1];
 }
 
 /**
@@ -45,20 +46,25 @@ function getPreview(): SceneNode {
 
 function addNewPreviewNode(callback?) {
   const result = filterNodesWithFills(figma.currentPage.selection);
-  if( result.length == 0) {
-    figma.notify('Figma Dither: Please select at lease one item with image fill.', {
-      timeout: 1000
-    });
+  if (result.length == 0) {
+    figma.notify(
+      "Figma Dither: Please select at lease one item with image fill.",
+      {
+        timeout: 1000
+      }
+    );
     return;
-  } else if(result.length > 1)
-  {
-    figma.notify('Figma Dither: More than one selection disables live preview.', {
-      timeout: 1000
-    });
+  } else if (result.length > 1) {
+    figma.notify(
+      "Figma Dither: More than one selection disables live preview.",
+      {
+        timeout: 1000
+      }
+    );
     return;
   }
   previewNodes.push(figma.currentPage.selection[0].clone());
-  if(callback) callback();
+  if (callback) callback();
 }
 
 // This plugin will open a modal to prompt the user to enter a number, and
@@ -69,14 +75,16 @@ function addNewPreviewNode(callback?) {
 // full browser enviroment (see documentation).
 
 if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
-  figma.notify('Figma Dither: Please select at lease one item with image fill.');
+  figma.notify(
+    "Figma Dither: Please select at lease one item with image fill."
+  );
   figma.closePlugin();
 } else {
-
-
   const isMultiple = multipleSelections();
   if (isMultiple) {
-    figma.notify('Figma Dither: More than one selection disables live preview.');
+    figma.notify(
+      "Figma Dither: More than one selection disables live preview."
+    );
   } else {
     addNewPreviewNode();
   }
@@ -95,44 +103,43 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
     if (msg.type === "dither-image") {
       const currentSelections = filterNodesWithFills(getCurrentSelections());
       if (currentSelections.length == 0) {
-        figma.notify('😅 Please select item(s) with image fill');
+        figma.notify("😅 Please select item(s) with image fill");
       } else {
-        DoImageDither(currentSelections, msg.options)
-          .then(function () {
-            closePlugin(getPreview());
-          });
+        DoImageDither(currentSelections, msg.options).then(function() {
+          closePlugin(getPreview());
+        });
       }
     }
-
-  
 
     if (msg.type === "cancel") {
       closePlugin(getPreview());
     }
 
-    if(msg.type == "processed-preview-imagebytes")
-    {
+    if (msg.type == "processed-preview-imagebytes") {
       // console.log('processed bytes', msg.imageBytes);
       // apply processed image to preview node..
       const result: JobResult = {
         fillData: firstImagefillsDataOnPreview,
         imageBytes: msg.imageBytes
-      }
+      };
 
       try {
-        applyProcessResults([result], [firstImagefillsDataOnPreview], false, () => {
-          // console.log('preview result applied!');
-        });
+        applyProcessResults(
+          [result],
+          [firstImagefillsDataOnPreview],
+          false,
+          () => {
+            // console.log('preview result applied!');
+          }
+        );
       } catch (e) {}
     }
 
-
     // Destroys all existing PreviewNode..
-    if(msg.type == 'destory-preview' || msg.type == 'disable-preview')
-    {
-      if(previewNodes.length!=0) {
+    if (msg.type == "destory-preview" || msg.type == "disable-preview") {
+      if (previewNodes.length != 0) {
         previewNodes.forEach(node => {
-          if(!node.removed) node.remove();
+          if (!node.removed) node.remove();
         });
       }
       previewNodes = [];
@@ -141,16 +148,13 @@ if (filterNodesWithFills(figma.currentPage.selection).length == 0) {
     // Trys to add a new PreviewNode...
     // if it fails - (1). because no GemetryMixin is selected
     // (2). More than one Nodes selected.
-    if(msg.type == 'show-preview' || msg.type == 'enable-preview')
-    {
+    if (msg.type == "show-preview" || msg.type == "enable-preview") {
       addNewPreviewNode(() => {
-        figma.notify('Figma Dither: Re-rendering preview 🤳', {
+        figma.notify("Figma Dither: Re-rendering preview 🤳", {
           timeout: 1000
         });
-        setupPreview(getPreview())
+        setupPreview(getPreview());
       });
     }
   };
-
 }
-

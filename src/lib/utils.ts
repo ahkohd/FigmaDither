@@ -1,8 +1,8 @@
-import { Queue } from './Queue';
-import workerTemplate from '../worker/entry.html';
-import ImageFillData from './IImageFillData';
-import JobResult from './IJobsResult';
-import DitherOptions from './IDitherOptions';
+import { Queue } from "./Queue";
+import workerTemplate from "../worker/entry.html";
+import ImageFillData from "./IImageFillData";
+import JobResult from "./IJobsResult";
+import DitherOptions from "./IDitherOptions";
 
 /**
  * Gets the current User Selection(s)
@@ -20,15 +20,13 @@ export function getCurrentSelections(): readonly SceneNode[] {
  */
 export function filterNodesWithFills(nodes: readonly SceneNode[]): SceneNode[] {
   const nodeWithFills = nodes.filter(node => {
-    if("fills" in node)
-    {
-      for(const fill of (node.fills as Array<any>))
-      {
-        if(fill.type == "IMAGE")  return true;
+    if ("fills" in node) {
+      for (const fill of node.fills as Array<any>) {
+        if (fill.type == "IMAGE") return true;
       }
       return false;
     } else {
-      return false
+      return false;
     }
   });
 
@@ -37,7 +35,7 @@ export function filterNodesWithFills(nodes: readonly SceneNode[]): SceneNode[] {
 
 /**
  * Checks if a object is iteratable
- * @param obj 
+ * @param obj
  */
 
 function _isIterable(obj) {
@@ -95,7 +93,10 @@ export function addTaskToPool(task: any, queue: Queue<any>) {
  * @returns Promise<JobResult[]> Returns an array of JobResult
  */
 
-export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<JobResult[]> {
+export function processJobs(
+  queue: Queue<any>,
+  options: DitherOptions
+): Promise<JobResult[]> {
   const jobs = queue.toArray();
   // console.log("All jobs", jobs);
 
@@ -108,12 +109,10 @@ export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<
   figma.ui.postMessage({ jobs: jobs, options: options });
   // Wait for the worker's response.
   const jobsResult = new Promise<JobResult[]>((resolve, reject) => {
-    figma.ui.onmessage = value => resolve(value)
+    figma.ui.onmessage = value => resolve(value);
   });
   return jobsResult;
-
 }
-
 
 /**
  * Converts ImageBytes to ImageHash and adds to ImagePaint
@@ -121,7 +120,10 @@ export function processJobs(queue: Queue<any>, options: DitherOptions): Promise<
  * @param  {ImagePaint} paint ImagePaint to add the converted ImageHash
  * @returns ImagePaint Returns a new ImagePaint with the converted ImageHash added to it
  */
-export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint): ImagePaint {
+export function BytesToImagePaintHashImage(
+  bytes: Uint8Array,
+  paint: ImagePaint
+): ImagePaint {
   // Create a new paint for the new image.
   const newPaint = JSON.parse(JSON.stringify(paint));
   newPaint.imageHash = figma.createImage(bytes).hash;
@@ -133,28 +135,36 @@ export function BytesToImagePaintHashImage(bytes: Uint8Array, paint: ImagePaint)
  * @param  {readonlySceneNode[]} currentSelectionsWithImageFills
  */
 
-export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNode[], options: DitherOptions) {
+export function DoImageDither(
+  currentSelectionsWithImageFills: readonly SceneNode[],
+  options: DitherOptions
+) {
   return new Promise((resolve, reject) => {
-    let TASKS = new Queue();
+    let TASKS = new Queue<any>();
     let nodeFills: ImageFillData[] = [];
 
-    currentSelectionsWithImageFills.forEach(async function (node, index) {
+    currentSelectionsWithImageFills.forEach(async function(node, index) {
       const nodesWithImageFills = getImageFillsFromNode(node);
-      nodesWithImageFills.forEach(async function (fillData) {
+
+      for (const fillData of nodesWithImageFills) {
         // carry out dither
         const imageBytes = await getImageBytes(fillData.imageFill);
         nodeFills.push(fillData);
         addTaskToPool({ imageBytes: imageBytes, fillData: fillData }, TASKS);
-      });
+      }
 
       // wait till all jobs are added..
       if (index == currentSelectionsWithImageFills.length - 1) {
         // start processing jobs..
-        applyProcessResults(await processJobs(TASKS, options), nodeFills, options.keep_image, resolve);
+        applyProcessResults(
+          await processJobs(TASKS, options),
+          nodeFills,
+          options.keep_image,
+          resolve
+        );
       }
     });
   });
-
 }
 /**
  * Applies the processed dither effect to appropriate nodes
@@ -163,18 +173,28 @@ export function DoImageDither(currentSelectionsWithImageFills: readonly SceneNod
  * @param  {keep} keepImageFills Keeps the original image fill instead of replacing it..
  * @param  {any} resolve
  */
-export function applyProcessResults(results: JobResult[], nodeFills: ImageFillData[], keepImageFills: boolean = false, resolve: any) {
+export function applyProcessResults(
+  results: JobResult[],
+  nodeFills: ImageFillData[],
+  keepImageFills: boolean = false,
+  resolve: any
+) {
   // console.log(nodeFills);
   results.forEach((result, index) => {
-    let processDitherEffect = BytesToImagePaintHashImage(result.imageBytes, result.fillData.imageFill);
+    let processDitherEffect = BytesToImagePaintHashImage(
+      result.imageBytes,
+      result.fillData.imageFill
+    );
     // clone the node fills
-    const copyNodeFills = [...((nodeFills[index].node as GeometryMixin).fills as Array<ImagePaint>)];
+    const copyNodeFills = [
+      ...((nodeFills[index].node as GeometryMixin).fills as Array<ImagePaint>)
+    ];
 
     if (!keepImageFills) {
       // replace the image filter
       copyNodeFills.splice(result.fillData.index, 1, processDitherEffect);
     } else {
-      // the new imag filter to the top..
+      // the new image filter to the top..
       copyNodeFills.push(processDitherEffect);
     }
 
@@ -185,15 +205,12 @@ export function applyProcessResults(results: JobResult[], nodeFills: ImageFillDa
   resolve();
 }
 
-
-export function multipleSelections()
-{
+export function multipleSelections() {
   const selection = figma.currentPage.selection;
-  return (selection.length ==  1)  ? false : true;
+  return selection.length == 1 ? false : true;
 }
 
-export function closePlugin(previewNode?: SceneNode)
-{
-  if(previewNode) (previewNode as SceneNode).remove();
+export function closePlugin(previewNode?: SceneNode) {
+  if (previewNode) (previewNode as SceneNode).remove();
   figma.closePlugin();
 }

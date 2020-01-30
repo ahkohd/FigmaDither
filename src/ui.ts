@@ -1,7 +1,6 @@
-import './figma-plugin-ds.min.js';
-import './figma-plugin-ds.min.css';
-import './ui.css';
-
+import "./figma-plugin-ds.min.js";
+import "./figma-plugin-ds.min.css";
+import "./ui.css";
 
 let DITHER_WORKER;
 let imageBytes;
@@ -10,131 +9,158 @@ let livePreview = true;
 
 function postJob(type: string) {
   const options = {
-    greyscale_method: getValue('greyscale_method'),
-    dither_method: getValue('dither_method'),
-    threshold: parseInt(getValue('threshold')),
-    chk_replace_colours: (document.getElementById('chk_replace_colours') as HTMLInputElement).checked,
-    rep_black: [parseInt(getValue('rep_black_r')), parseInt(getValue('rep_black_b')), parseInt(getValue('rep_black_g')), parseInt(getValue('rep_black_a'))],
-    rep_white: [parseInt(getValue('rep_white_r')), parseInt(getValue('rep_white_b')), parseInt(getValue('rep_white_g')), parseInt(getValue('rep_white_a'))],
-    keep_image: (document.getElementById('keep_image') as HTMLInputElement).checked,
-  }
+    greyscale_method: getValue("greyscale_method"),
+    dither_method: getValue("dither_method"),
+    threshold: parseInt(getValue("threshold")),
+    chk_replace_colours: (document.getElementById(
+      "chk_replace_colours"
+    ) as HTMLInputElement).checked,
+    rep_black: [
+      parseInt(getValue("rep_black_r")),
+      parseInt(getValue("rep_black_b")),
+      parseInt(getValue("rep_black_g")),
+      parseInt(getValue("rep_black_a"))
+    ],
+    rep_white: [
+      parseInt(getValue("rep_white_r")),
+      parseInt(getValue("rep_white_b")),
+      parseInt(getValue("rep_white_g")),
+      parseInt(getValue("rep_white_a"))
+    ],
+    keep_image: (document.getElementById("keep_image") as HTMLInputElement)
+      .checked
+  };
 
-  if (type == 'dither-image-preview') {
+  if (type == "dither-image-preview") {
     processPreview(options);
   } else {
-    parent.postMessage({ pluginMessage: { type: type, options: options } }, '*');
+    parent.postMessage(
+      { pluginMessage: { type: type, options: options } },
+      "*"
+    );
   }
 }
 
-document.getElementById('dither').onclick = () => {
-  postJob('dither-image');
-}
+document.getElementById("dither").onclick = () => {
+  postJob("dither-image");
+};
 
 function getValue(selector) {
   return (document.getElementById(selector) as HTMLInputElement).value;
 }
 
-function showIndicator()
-{
-  document.getElementById("loader").style.display = 'block';
+function showIndicator() {
+  document.getElementById("loader").style.display = "block";
 }
 
-function hideIndicator()
-{
-  document.getElementById("loader").style.display = 'none';
+function hideIndicator() {
+  document.getElementById("loader").style.display = "none";
 }
 
-document.getElementById('cancel').onclick = () => {
-  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-}
+document.getElementById("cancel").onclick = () => {
+  parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+};
 
 //initialize javascript
 (window as any).selectMenu.init();
 
 //settings
 (window as any).selectMenu.init({
-  position: 'positionToSelection' //other options: 'under', 'overlap'
+  position: "positionToSelection" //other options: 'under', 'overlap'
 });
 
-
-
 // When user change dithering method to Treshold, then enable the treshhold input box ...
-document.getElementById('dither_method').onchange = function () {
-  const treshInputElem = document.getElementById('threshold');
-  // seems like a glitch with figma component library used slow  down value update. 
+document.getElementById("dither_method").onchange = function() {
+  const treshInputElem = document.getElementById("threshold");
+  // seems like a glitch with figma component library used slow  down value update.
   // lets append to task queue. This hack fix the bug.
   setTimeout(() => {
-    const value = (document.getElementById('dither_method') as HTMLInputElement).value;
+    const value = (document.getElementById("dither_method") as HTMLInputElement)
+      .value;
 
     if (value == "Threshold") {
-      treshInputElem.removeAttribute('disabled');
+      treshInputElem.removeAttribute("disabled");
     } else {
-      treshInputElem.setAttribute('disabled', (true as any));
+      treshInputElem.setAttribute("disabled", true as any);
     }
-    postJob('dither-image-preview');
+    postJob("dither-image-preview");
   }, 0);
 };
 
-
 // Activate color input boxes when user enables replace with color..
-document.getElementById('chk_replace_colours').onchange = function (e) {
-  const value = (document.getElementById('chk_replace_colours') as HTMLInputElement).checked;
-  const colorInputs = document.getElementsByClassName('ci');
+document.getElementById("chk_replace_colours").onchange = function(e) {
+  const value = (document.getElementById(
+    "chk_replace_colours"
+  ) as HTMLInputElement).checked;
+  const colorInputs = document.getElementsByClassName("ci");
   for (let i = 0; i < colorInputs.length; i++) {
     if (value) {
-      (colorInputs[i] as HTMLInputElement).removeAttribute('disabled');
+      (colorInputs[i] as HTMLInputElement).removeAttribute("disabled");
     } else {
-      (colorInputs[i] as HTMLInputElement).setAttribute('disabled', (true as any));
+      (colorInputs[i] as HTMLInputElement).setAttribute(
+        "disabled",
+        true as any
+      );
     }
   }
-  postJob('dither-image-preview');
-}
-
+  postJob("dither-image-preview");
+};
 
 // Activate color input boxes when user enables replace with color..
-document.getElementById('live_preview').onchange = function (e) {
-  livePreview = !(document.getElementById('live_preview') as HTMLInputElement).checked;
-  if(!livePreview)
-  {
-    parent.postMessage({ pluginMessage: { type: 'disable-preview' } }, '*');
+document.getElementById("live_preview").onchange = function(e) {
+  livePreview = !(document.getElementById("live_preview") as HTMLInputElement)
+    .checked;
+  if (!livePreview) {
+    parent.postMessage({ pluginMessage: { type: "disable-preview" } }, "*");
   } else {
-    parent.postMessage({ pluginMessage: { type: 'enable-preview' } }, '*');
+    parent.postMessage({ pluginMessage: { type: "enable-preview" } }, "*");
   }
-}
+};
 
 // on greyscale method change send preview job
-document.getElementById('greyscale_method').onchange = function () {
+document.getElementById("greyscale_method").onchange = function() {
   setTimeout(() => {
-    postJob('dither-image-preview');
+    postJob("dither-image-preview");
   }, 0);
-}
+};
 
+let effCall = debounce(
+  function() {
+    postJob("dither-image-preview");
+  },
+  1000,
+  false
+);
 
-
-let effCall  = debounce(function(){
-  postJob('dither-image-preview');
-}, 1000, false);
-
-const inputSelectorList = ['threshold', 'rep_black_r', 'rep_black_g', 'rep_black_b', 'rep_black_a', 'rep_white_r', 'rep_white_g', 'rep_white_b', 'rep_white_a'];
+const inputSelectorList = [
+  "threshold",
+  "rep_black_r",
+  "rep_black_g",
+  "rep_black_b",
+  "rep_black_a",
+  "rep_white_r",
+  "rep_white_g",
+  "rep_white_b",
+  "rep_white_a"
+];
 inputSelectorList.forEach(selector => {
-  document.getElementById(selector).onkeyup = effCall
-
+  document.getElementById(selector).onkeyup = effCall;
 });
 
-
-window.onmessage = (msg) => {
-  if (msg.data.pluginMessage.type == 'preview-node-image-bytes') {
+window.onmessage = msg => {
+  if (msg.data.pluginMessage.type == "preview-node-image-bytes") {
     imageBytes = msg.data.pluginMessage.imageBytes;
     // first run on ui show...
-    postJob('dither-image-preview');
+    postJob("dither-image-preview");
   }
-}
+};
 
 function debounce(func, wait, immediate) {
   var timeout;
-  return function () {
-    var context = this, args = arguments;
-    var later = function () {
+  return function() {
+    var context = this,
+      args = arguments;
+    var later = function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -143,33 +169,33 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
+}
 
-const efficientLeaveCall = debounce(function () {
-  if(!livePreview) return;
-  parent.postMessage({ pluginMessage: { type: 'destory-preview' } }, '*');
-}, 250, false);
+const efficientLeaveCall = debounce(
+  function() {
+    if (!livePreview) return;
+    parent.postMessage({ pluginMessage: { type: "destory-preview" } }, "*");
+  },
+  250,
+  false
+);
 
 document.onmouseleave = efficientLeaveCall;
 
-const efficientEnterCall = debounce(function () {
-  if(!livePreview) return;
-  if (!isFirstEnter) {
-    isFirstEnter = true;
-    return;
-  }
-  parent.postMessage({ pluginMessage: { type: 'show-preview' } }, '*');
-}, 250, false);
+const efficientEnterCall = debounce(
+  function() {
+    if (!livePreview) return;
+    if (!isFirstEnter) {
+      isFirstEnter = true;
+      return;
+    }
+    parent.postMessage({ pluginMessage: { type: "show-preview" } }, "*");
+  },
+  250,
+  false
+);
 
 document.onmouseenter = efficientEnterCall;
-
-
-
-
-
-
-
-
 
 /////////////////////////////////////////////////////// PREVIEW WORKER SETUP
 // Almost the same setup as the final jobs worker, you should check the comments out..
@@ -292,34 +318,39 @@ function loadWebWorker(script) {
 }
 
 async function encode(canvas, ctx, imageData) {
-  ctx.putImageData(imageData, 0, 0)
+  ctx.putImageData(imageData, 0, 0);
   return await new Promise((resolve, reject) => {
     canvas.toBlob(blob => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(new Uint8Array((reader as any).result))
-      reader.onerror = () => reject(new Error('Could not read from blob'))
-      reader.readAsArrayBuffer(blob)
-    })
-  })
+      const reader = new FileReader();
+      reader.onload = () => resolve(new Uint8Array((reader as any).result));
+      reader.onerror = () => reject(new Error("Could not read from blob"));
+      reader.readAsArrayBuffer(blob);
+    });
+  });
 }
 
 async function decode(canvas, ctx, bytes) {
-  const url = URL.createObjectURL(new Blob([bytes]))
+  const url = URL.createObjectURL(new Blob([bytes]));
   const image = await new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = () => reject()
-    img.src = url
-  })
-  canvas.width = (image as any).width
-  canvas.height = (image as any).height
-  ctx.drawImage(image, 0, 0)
-  const imageData = ctx.getImageData(0, 0, (image as any).width, (image as any).height)
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject();
+    img.src = url;
+  });
+  canvas.width = (image as any).width;
+  canvas.height = (image as any).height;
+  ctx.drawImage(image, 0, 0);
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    (image as any).width,
+    (image as any).height
+  );
   return {
     imageData: imageData,
     width: (image as any).width,
     height: (image as any).width
-  }
+  };
 }
 
 // start preview webworker...
@@ -328,11 +359,21 @@ DITHER_WORKER = loadWebWorker(workerScript);
 function processPreview(config) {
   showIndicator();
 
-  processDither({ imageBytes: imageBytes }, config).then(processedPreviewImageBytes => {
-    // send process preview image to bg..
-    hideIndicator();
-    parent.postMessage({ pluginMessage: { type: 'processed-preview-imagebytes', imageBytes: processedPreviewImageBytes } }, '*');
-  });
+  processDither({ imageBytes: imageBytes }, config).then(
+    processedPreviewImageBytes => {
+      // send process preview image to bg..
+      hideIndicator();
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: "processed-preview-imagebytes",
+            imageBytes: processedPreviewImageBytes
+          }
+        },
+        "*"
+      );
+    }
+  );
 }
 
 async function processDither(job, options) {
@@ -373,8 +414,17 @@ async function processDither(job, options) {
 
   // Start timer to track the time that is spent on this current job ...
   if (window.console && window.console.time) {
-    console.log("Starting Preview Web Worker for image (" + imageDetails.width + "x" + imageDetails.height +
-      ", Greyscale Method: " + options.greyscale_method + ", Dither Method: " + options.dither_method + ")");
+    console.log(
+      "Starting Preview Web Worker for image (" +
+        imageDetails.width +
+        "x" +
+        imageDetails.height +
+        ", Greyscale Method: " +
+        options.greyscale_method +
+        ", Dither Method: " +
+        options.dither_method +
+        ")"
+    );
     console.time("Preview Web worker took");
   }
 
@@ -385,26 +435,23 @@ async function processDither(job, options) {
   // therefore each job applies an event listner to the worker and once the workers=
   // sends the result back, we dispose/unregister the event listner...
 
-  const workerResult = new Promise(function (resolve, reject) {
+  const workerResult = new Promise(function(resolve, reject) {
     // Get reply from webworker
-    const oneTimeListen = function (e) {
+    const oneTimeListen = function(e) {
       // console.log('result', e);
       if (window.console && window.console.time) {
         console.timeEnd("Preview Web worker took");
       }
       const result = e.data;
       encode(canvas, ctx, result.image.data).then(newBytes => {
-
         // make it a one time event listner...
-        DITHER_WORKER.removeEventListener('message', oneTimeListen);
+        DITHER_WORKER.removeEventListener("message", oneTimeListen);
         resolve(newBytes);
       });
     };
 
-    DITHER_WORKER.addEventListener('message', oneTimeListen, false);
+    DITHER_WORKER.addEventListener("message", oneTimeListen, false);
   });
 
   return workerResult;
 }
-
-

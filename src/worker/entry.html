@@ -88,8 +88,8 @@
   </div>
 </div>
 
-<script>    
-//////////////////////////////////////////////// WEB WORKER script in string...
+<script>
+  //////////////////////////////////////////////// WEB WORKER script in string...
 
   // The code contained in this string is the actual logics to manipulate  canvas image
   // and carry out the dithering effect..
@@ -214,6 +214,7 @@ self.addEventListener("message", function (e) { self.postMessage(dither(e.data))
   // Neat trick:
 
   function loadWebWorker(script) {
+    console.log("WORKER LOADED.");
     return new Worker(URL.createObjectURL(new Blob([script])));
   }
 
