@@ -17,15 +17,13 @@ Add dithering effects to your images right there in Figma
 
 ### Demo
 
+![Dithered Image 🔥](./dither-shot.png)
+
 ![Dither in Action](./demo-naruto.gif)
 
 ![Yet another demo!](./demo.gif)
 
-### Screenshots
-
-![Dithered Image 🔥](./dither-shot.png)
-
-# 💻 Development
+## Development
 
 First clone this repository.
 
@@ -37,23 +35,23 @@ $ cd FigmaDither
 Install dependencies & build files to start local development.
 
 ```bash
-$ npm install --save-dev css-loader html-webpack-inline-source-plugin html-webpack-plugin style-loader ts-loader typescript url-loader webpack webpack-cli raw-loader
-$ npx webpack --mode=development --watch
+$ pnpm install
+$ pnpm dev
 ```
 
-# Resources
+## Resources
 
-Stuffs I found really helpful when I was developing FigmaDither are as follows.
+Stuffs I found really helpful when developing `FigmaDither` are as follows:
 
 - [Coding Challenge #90: Floyd-Steinberg Dithering](https://www.youtube.com/watch?v=0L2n8Tg2FwI)
 - [Canvas-dither by @ticky](https://github.com/ticky/canvas-dither)
 - [Wikipedia](https://en.wikipedia.org/wiki/Dither)
 - [Figma Plugin Docs](https://www.figma.com/plugin-docs/intro/)
 
-# LICENSE
+## LICENSE
 
 [MIT](./LICENSE.md)
 
-# ☕️ Donate
+## ☕️ Donate
 
 <a href="https://www.buymeacoffee.com/jwlE0N8" target="_blank"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
