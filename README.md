@@ -1,6 +1,6 @@
 <img src="./fd.png" height="80" style="display: table; margin: 0 auto;"/>
 
-[![Actions Status](https://github.com/ahkohd/FigmaDither/workflows/ProdBuild/badge.svg)](https://github.com/ahkohd/FigmaDither/workflows/ProdBuild/badge.svg)
+[![Actions Status](https://github.com/ahkohd/FigmaDither/workflows/check-production-build/badge.svg)](https://github.com/ahkohd/FigmaDither/workflows/check-production-build/badge.svg)
 
 A Figma plugin that helps you to easily add dithering effects to images right there in your scene. ✨🦄
 
