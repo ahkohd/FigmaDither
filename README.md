@@ -11,26 +11,19 @@ Add dithering effects to your images right there in Figma
 - Grayscale image processing support
 - Uses WebWorker for fast image processing
 - Multiple dithering at once with multiple item selection
-- Provides two image dithering methods out of the box
-- Now able to dither/process each channel (R, G and B) separately, producing interesting effects
-- Easily fine-tune your image dithering with color replacement options
-- Easily toggle between swapping old image with the new dithered image or keeping both
+- Dither or process each channel (R, G and B) separately, producing interesting effects
+- Fine-tune your image dithering with color replacement options
+- Easy toggle between the original or dithered image, or keeping both
 
-# 🎥 Demo
+### Demo
 
 ![Dither in Action](./demo-naruto.gif)
 
-[See another demo.](./demo.gif)
+![Yet another demo!](./demo.gif)
 
-# 📸 Screenshots
-
-The shot taken below is a fresh dithered image in a Figma scene. 🔥
+### Screenshots
 
 ![Dithered Image 🔥](./dither-shot.png)
-
-# ☕️ Donate
-
-<a href="https://www.buymeacoffee.com/jwlE0N8" target="_blank"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 # 💻 Development
 
@@ -60,3 +53,7 @@ Stuffs I found really helpful when I was developing FigmaDither are as follows.
 # LICENSE
 
 [MIT](./LICENSE.md)
+
+# ☕️ Donate
+
+<a href="https://www.buymeacoffee.com/jwlE0N8" target="_blank"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
