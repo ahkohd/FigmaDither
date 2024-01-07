@@ -17,11 +17,11 @@ Add dithering effects to your images right there in Figma
 
 ### Demo
 
-![Dithered Image 🔥](./dither-shot.png)
-
 ![Dither in Action](./demo-naruto.gif)
 
-![Yet another demo!](./demo.gif)
+![Dithered Image 🔥](./dither-shot.png)
+
+[Checkout another demo](./demo.gif)
 
 ## Development
 
@@ -41,12 +41,12 @@ $ pnpm dev
 
 ## Resources
 
-Stuffs I found really helpful when developing `FigmaDither` are as follows:
+Stuffs I find helpful when developing `FigmaDither` are as follows:
 
-- [Coding Challenge #90: Floyd-Steinberg Dithering](https://www.youtube.com/watch?v=0L2n8Tg2FwI)
-- [Canvas-dither by @ticky](https://github.com/ticky/canvas-dither)
+- [coding challenge #90: Floyd-Steinberg dithering](https://www.youtube.com/watch?v=0L2n8Tg2FwI)
+- [canvas-dither by @ticky](https://github.com/ticky/canvas-dither)
 - [Wikipedia](https://en.wikipedia.org/wiki/Dither)
-- [Figma Plugin Docs](https://www.figma.com/plugin-docs/intro/)
+- [Figma plugin Docs](https://www.figma.com/plugin-docs/intro/)
 
 ## LICENSE
 
