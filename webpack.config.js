@@ -1,8 +1,8 @@
-const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlInlineScriptWebpackPlugin = require("html-inline-script-webpack-plugin");
 
-module.exports = (env, argv) => ({
+module.exports = (_, argv) => ({
   mode: argv.mode === "production" ? "production" : "development",
 
   // This is necessary because Figma's 'eval' works differently than normal eval
@@ -10,7 +10,7 @@ module.exports = (env, argv) => ({
 
   entry: {
     ui: "./src/ui.ts", // The entry point for your UI code
-    code: "./src/code.ts" // The entry point for your plugin code,
+    code: "./src/code.ts", // The entry point for your plugin code,
   },
 
   module: {
@@ -21,15 +21,15 @@ module.exports = (env, argv) => ({
       // Enables including CSS by doing "import './file.css'" in your TypeScript code
       {
         test: /\.css$/,
-        loader: [{ loader: "style-loader" }, { loader: "css-loader" }]
+        use: ["style-loader", "css-loader"],
       },
       // Allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
-      { test: /\.(png|jpg|gif|webp|svg)$/, loader: [{ loader: "url-loader" }] },
+      { test: /\.(png|jpg|gif|webp|svg)$/, loader: "url-loader" },
       {
         test: /\.html$/,
-        use: "raw-loader"
-      }
-    ]
+        use: "raw-loader",
+      },
+    ],
   },
 
   // Webpack tries these extensions for you if you omit the extension like "import './file'"
@@ -37,7 +37,7 @@ module.exports = (env, argv) => ({
 
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "dist") // Compile into a folder called "dist"
+    path: path.resolve(__dirname, "dist"), // Compile into a folder called "dist"
   },
 
   // Tells Webpack to generate "ui.html" and to inline "ui.ts" into it
@@ -46,8 +46,8 @@ module.exports = (env, argv) => ({
       template: "./src/ui.html",
       filename: "ui.html",
       inlineSource: ".(js)$",
-      chunks: ["ui"]
+      chunks: ["ui"],
     }),
-    new HtmlWebpackInlineSourcePlugin()
-  ]
+    new HtmlInlineScriptWebpackPlugin(),
+  ],
 });
