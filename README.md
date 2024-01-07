@@ -21,7 +21,7 @@ Add dithering effects to your images right there in Figma
 
 ![Dithered Image 🔥](./dither-shot.png)
 
-[Checkout another demo](./demo.gif)
+[check out another demo](./demo.gif)
 
 ## Development
 
