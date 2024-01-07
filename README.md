@@ -46,7 +46,7 @@ Stuffs I find helpful when developing `FigmaDither` are as follows:
 - [coding challenge #90: Floyd-Steinberg dithering](https://www.youtube.com/watch?v=0L2n8Tg2FwI)
 - [canvas-dither by @ticky](https://github.com/ticky/canvas-dither)
 - [Wikipedia](https://en.wikipedia.org/wiki/Dither)
-- [Figma plugin Docs](https://www.figma.com/plugin-docs/intro/)
+- [Figma plugin docs](https://www.figma.com/plugin-docs/intro/)
 
 ## LICENSE
 
