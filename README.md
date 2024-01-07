@@ -13,7 +13,7 @@ Add dithering effects to your images right there in Figma
 - Multiple dithering at once with multiple item selection
 - Dither or process each channel (R, G and B) separately, producing interesting effects
 - Fine-tune your image dithering with color replacement options
-- Easy toggle between the original or dithered image, or keeping both
+- Easy toggle between the original or dithered image, or keep both
 
 ### Demo
 
