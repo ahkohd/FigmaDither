@@ -22,10 +22,10 @@ devDependencies:
     version: 4.0.0(webpack@5.96.1)
   ts-loader:
     specifier: ^9.5.1
-    version: 9.5.1(typescript@5.6.3)(webpack@5.96.1)
+    version: 9.5.1(typescript@5.7.2)(webpack@5.96.1)
   typescript:
     specifier: ^5.3.3
-    version: 5.6.3
+    version: 5.7.2
   url-loader:
     specifier: ^4.1.1
     version: 4.1.1(webpack@5.96.1)
@@ -1204,7 +1204,7 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /ts-loader@9.5.1(typescript@5.6.3)(webpack@5.96.1):
+  /ts-loader@9.5.1(typescript@5.7.2)(webpack@5.96.1):
     resolution: {integrity: sha512-rNH3sK9kGZcH9dYzC7CewQm4NtxJTjSEVRJ2DyBZR7f8/wcta+iV44UPCXc5+nzDzivKtlzV6c9P4e+oFhDLYg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -1216,7 +1216,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.5.4
       source-map: 0.7.4
-      typescript: 5.6.3
+      typescript: 5.7.2
       webpack: 5.96.1(webpack-cli@5.1.4)
     dev: true
 
@@ -1224,8 +1224,8 @@ packages:
     resolution: {integrity: sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==}
     dev: true
 
-  /typescript@5.6.3:
-    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
+  /typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
